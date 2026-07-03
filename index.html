@@ -897,6 +897,31 @@ button {
   color: #7f1d1d;
 }
 
+.choice-button.correct-pick {
+  border-color: rgba(34, 197, 94, 0.65);
+  background: rgba(34, 197, 94, 0.12);
+  color: #14532d;
+}
+
+.choice-button.wrong-pick {
+  border-color: rgba(239, 68, 68, 0.72);
+  background: rgba(239, 68, 68, 0.12);
+  color: #7f1d1d;
+}
+
+.info-dot {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.16);
+  color: #0369a1;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .disposition-choice > span:first-child {
   display: grid;
   gap: 3px;
@@ -1091,19 +1116,19 @@ const CASES = [
     summary: "A customer reports that a late-night transfer left their account without permission.",
     transaction: {
       Amount: "$480",
-      Time: "1:42 AM",
+      Time: "07/02/2026 01:42 AM",
       Device: "New Android device",
       Location: "Nevada; customer usually logs in from Georgia",
-      Recipient: "New recipient added 11 minutes before transfer"
+      Recipient: "Marcus D."
     },
-    notes: "Customer says they did not recognize the device, recipient, or transfer.",
-    redFlags: ["New device", "New location", "Password reset", "New recipient"],
+    notes: "Customer says they did not recognize the device, recipient, or transfer. Call note from 07/01/2026 06:43 PM: customer received a call from someone they believed was the bank. Caller said there was fraud on the account, told the customer to act fast, and the customer read back the security code texted to their phone.",
+    redFlags: ["OTP code shared with caller", "New device", "New location", "Password change", "New recipient", "Savings-to-checking staging transfer"],
     evidence: [
       { title: "Profile change", body: "The account email was changed 20 minutes before the transfer." },
       { title: "Login history", body: "The customer had no prior logins from Nevada in the last 12 months." }
     ],
     correct: "Account Takeover",
-    explanation: "This is likely account takeover because the transfer followed a password reset, email change, new device login, and new recipient setup.",
+    explanation: "This is likely account takeover because the transfer followed an OTP social-engineering call, attacker login, password change, email update, new recipient setup, internal staging transfer, and Zelle transfer to Marcus D.",
     other: "Fraud is too broad here, first-party fraud lacks support because the customer lost account control, and normal behavior does not fit the access changes.",
     hints: ["Look at what changed right before the money moved.", "New device plus profile changes often point to compromised access."]
   },
@@ -1867,7 +1892,7 @@ const SUSPECT_INFO = {
   a7: "Identified wire recipient: M. Vargas; stranger to customer and unrelated to the company named in the email.",
   a1: "Identifiable synthetic-account cluster using related emails and payout account ending 9081.",
   a2: "Identified recipient: Lena P. on Zelle; customer denies relationship after SIM event.",
-  a3: "No suspect. Activity matches customer baseline.",
+  a3: "No suspect. Activity matches customer profile.",
   a4: "No identifiable suspect; fraudulent application originated from new device and alternate shipping address.",
   a5: "Identified recipient labeled Safe Holding; account holder name Devon R.; stranger to customer.",
   a6: "No suspect. Recipient is verified title company from closing documents.",
@@ -1880,34 +1905,39 @@ const SUSPECT_INFO = {
   e6: "No identifiable suspect; ACH recipient is a crypto exchange omnibus account, not an individual beneficiary."
 };
 const ALERT_SOURCES = {
-  b1: ["Client-reported", "Customer called after seeing an outgoing Zelle they did not recognize."],
-  b2: ["System-generated", "Purchase amount was above the customer's recent average."],
-  b3: ["System-generated", "New account requested cash advance shortly after signup."],
+  b1: ["Client-reported", "Cust called re: Zelle she didn't do? Also mentioned bank call/code yesterday. Poss ATO, please review."],
+  b2: ["System-generated", "Rule: Amount Above Customer Profile - purchase amount was above the customer's recent average."],
+  b3: ["System-generated", "Rule: New Account Cash-Out Velocity - new account requested cash advance shortly after signup."],
   b4: ["Client-reported", "Identity owner reported an account approval email they did not recognize."],
-  b5: ["System-generated", "Profile change alert triggered after a phone number update."],
-  i1: ["System-generated", "Repeat high-value dispute pattern triggered review."],
-  i2: ["System-generated", "Location anomaly triggered while customer was traveling."],
-  i3: ["System-generated", "Multiple accounts sent funds to the same new recipient."],
-  i5: ["Client-reported", "Customer called after the deposited loan check returned and left a negative balance."],
+  b5: ["System-generated", "Rule: Profile Change Follow-Up - phone update followed by customer activity."],
+  i1: ["System-generated", "Rule: Repeat High-Value Dispute - dispute pattern triggered review."],
+  i2: ["System-generated", "Rule: Geo Anomaly - location anomaly triggered while customer was traveling."],
+  i3: ["System-generated", "Rule: New Recipient High Velocity - multiple accounts sent funds to the same new recipient."],
+  i5: ["Client-reported", "Cust called re: loan check returned/negative bal. Says lender told her to send fees. Please review."],
   i6: ["Client-reported", "Customer reported a missing debit card and unauthorized ATM withdrawals."],
   a7: ["Client-reported", "Customer called after wiring funds back to a caller claiming to fix a mistaken refund."],
-  a1: ["System-generated", "Limit increase followed by max cash advance and payout change."],
-  a2: ["Client-reported", "Customer reported phone service disruption and an unrecognized transfer."],
+  a1: ["System-generated", "Rule: Rapid Money Movement - limit increase followed by max cash advance and payout change."],
+  a2: ["Client-reported", "Cust says phone lost service and transfer isn't hers. SIM issue? Review profile/login."],
   a4: ["Client-reported", "Victim reported personal information was used after wallet theft."],
-  a3: ["System-generated", "Recent late payment plus multiple weekend transactions triggered review."],
-  a6: ["System-generated", "Large outgoing wire was far above customer's normal transaction size."],
-  e1: ["System-generated", "Repeated returns and disputes across related merchants triggered review."],
-  e2: ["System-generated", "Network link detected between customer accounts and a new marketplace seller."],
+  a3: ["System-generated", "Rule: Credit Risk Plus Spend Spike - recent late payment plus multiple weekend transactions triggered review."],
+  a6: ["System-generated", "Rule: High-Dollar Wire - large outgoing wire was far above customer's normal transaction size."],
+  e1: ["System-generated", "Rule: Continuing Refund Abuse Pattern - repeated returns and disputes across related merchants triggered review."],
+  e2: ["System-generated", "Rule: Marketplace Network Link - network link detected between customer accounts and a new marketplace seller."],
   e3: ["Client-reported", "Older customer contacted support about a transfer made during an urgent phone call."],
-  i4: ["System-generated", "Repeated payments to a new recipient triggered romance-scam pattern review."],
+  i4: ["System-generated", "Rule: Repeated New-Recipient Payments - repeated payments to a new recipient triggered romance-pattern review."],
   a5: ["Client-reported", "Customer reported a fraud-department text and transfer to a safe-account recipient."],
   e4: ["Client-reported", "Older customer reported sending funds after an emergency call about a family member."],
-  e5: ["System-generated", "Family-member/caregiver access triggered elder exploitation review."],
+  e5: ["System-generated", "Rule: Caregiver Access Outflow - family-member/caregiver access triggered elder exploitation review."],
   e6: ["Client-reported", "Customer reported unauthorized ACH transfers to a crypto exchange."]
+};
+const PRIOR_CASE_HISTORY = {
+  e1: "Prior case closed 05/30/2026: SAR filed for dispute/refund abuse on this customer. Same behavior pattern continued after filing.",
+  a3: "Prior alert closed 06/03/2026: payroll-delay late payment reviewed as false positive; no fraud found."
 };
 const TRANSACTION_ACTIVITY = {
   b1: [
-    ["01:42 AM", "Zelle", "$480", "Outgoing transfer to new recipient"]
+    ["07/02/2026 01:38 AM", "Internal Transfer", "$480", "Funds moved from savings to checking"],
+    ["07/02/2026 01:42 AM", "Zelle", "$480", "Outgoing transfer from checking to new recipient"]
   ],
   b2: [
     ["02:14 PM", "Store Purchase", "$220", "Home goods purchase from known device"]
@@ -2016,9 +2046,10 @@ const TRANSACTION_ACTIVITY = {
 };
 const PROFILE_EVENTS = {
   b1: [
-    ["07/02/2026 01:14 AM", "Password reset requested"],
-    ["07/02/2026 01:21 AM", "Email changed from known email to new address"],
-    ["07/02/2026 01:31 AM", "New recipient added"]
+    ["07/01/2026 06:43 PM", "Customer reports bank-imposter call and shared one-time security code"],
+    ["07/02/2026 01:16 AM", "Password changed after new-location login"],
+    ["07/02/2026 01:24 AM", "Email updated from known email to new address"],
+    ["07/02/2026 01:31 AM", "New recipient Marcus D. added"]
   ],
   b5: [
     ["07/02/2026 10:12 AM", "Customer called support about damaged phone"],
@@ -2048,11 +2079,15 @@ const PROFILE_EVENTS = {
 };
 const IP_SESSION_LOGS = {
   b1: [
-    ["06/27 09:02 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
-    ["06/28 07:44 PM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
-    ["07/02/2026 01:13 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "login"],
-    ["07/02/2026 01:21 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "profile change"],
-    ["07/02/2026 01:42 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "transaction"]
+    ["06/24/2026 09:02 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal customer login"],
+    ["06/28/2026 07:44 PM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal customer login"],
+    ["07/01/2026 08:12 PM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal customer login after suspicious call"],
+    ["07/02/2026 01:13 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "attacker login"],
+    ["07/02/2026 01:16 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "password change"],
+    ["07/02/2026 01:24 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "profile update"],
+    ["07/02/2026 01:31 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "new recipient added"],
+    ["07/02/2026 01:38 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "internal transfer savings to checking"],
+    ["07/02/2026 01:42 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "Zelle transfer to Marcus D."]
   ],
   b2: [
     ["07/02/2026 01:58 PM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
@@ -2235,6 +2270,7 @@ const state = {
   selectedClassification: null,
   selectedTypologies: new Set(),
   selectedSarDecision: null,
+  activeTypologyInfo: null,
   caseNotes: "",
   narrativeDraft: "",
   narrativeFeedback: "",
@@ -2272,6 +2308,7 @@ function clearActiveCaseState() {
   state.expandedEvidence = new Set();
   state.openClues = new Set(["summary"]);
   state.selectedSarDecision = null;
+  state.activeTypologyInfo = null;
   state.caseNotes = "";
   state.narrativeDraft = "";
   state.hintCount = 0;
@@ -2328,16 +2365,84 @@ function documentationPacket(item) {
   return ["IP/session data", "profile information", "transaction activity", "customer notes", "recipient/suspect information"];
 }
 
+function priorCaseHistory(item) {
+  return PRIOR_CASE_HISTORY[item.id] || "No prior fraud cases on this customer.";
+}
+
+function fullDateTime(value, fallbackDate = "07/02/2026") {
+  const text = String(value || "");
+  if (/^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}\s+[AP]M$/i.test(text)) return text;
+  if (/^\d{2}\/\d{2}\/\d{4},\s*\d{1,2}:\d{2}\s+[AP]M$/i.test(text)) return text.replace(",", "");
+  if (/^\d{2}\/\d{2}\s+\d{1,2}:\d{2}\s+[AP]M$/i.test(text)) return `${text.slice(0, 5)}/2026${text.slice(5)}`;
+  if (/^\d{1,2}:\d{2}\s+[AP]M$/i.test(text)) return `${fallbackDate} ${text}`;
+  return text;
+}
+
+function p2pRecipient(item, type = "") {
+  const known = {
+    b1: "Marcus D.",
+    i3: "Darius M.",
+    i5: "Riley T.",
+    a2: "Lena P.",
+    i4: "Elena M.",
+    a5: "Devon R.",
+    e3: "Oliver K.",
+    e4: "Thomas B.",
+    e5: "Daniel R.",
+    a7: "M. Vargas"
+  };
+  if (known[item.id]) return known[item.id];
+  const info = SUSPECT_INFO[item.id] || "";
+  const match = info.match(/(?:recipient|contact|suspect|holder|owner):?\s*([A-Z][A-Za-z.]+\s+[A-Z]\.)/);
+  return match ? match[1] : "recipient";
+}
+
+function transactionIpFor(item) {
+  const sessions = IP_SESSION_LOGS[item.id] || [];
+  const suspicious = sessions.find(([, ip, , , region, , , action]) =>
+    ip && ip !== "-" && region && !/normal customer login|support call|authenticated call/i.test(action || "")
+  );
+  return suspicious || sessions.find(([, ip]) => ip && ip !== "-") || ["", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "session"];
+}
+
 function transactionActivity(item) {
-  return TRANSACTION_ACTIVITY[item.id] || Object.entries(item.transaction).map(([key, value]) => [key, "Detail", "-", value]);
+  const base = TRANSACTION_ACTIVITY[item.id] || Object.entries(item.transaction).map(([key, value]) => [key, "Detail", "-", value]);
+  return base.map(([time, type, amount, detail]) => {
+    const fullTime = fullDateTime(time);
+    let displayType = type;
+    let displayDetail = detail;
+    if (/^(Zelle|PayPal|P2P)$/i.test(type)) displayType = `${type} to ${p2pRecipient(item, type)}`;
+    if (/^(Zelle|PayPal|P2P|ACH|Wire|Cash Advance|Internal Transfer)$/i.test(type) && !/checking|savings/i.test(displayDetail)) {
+      displayDetail = `${displayDetail}; from checking`;
+    }
+    return [fullTime, displayType, amount, displayDetail];
+  });
 }
 
 function profileEvents(item) {
-  return PROFILE_EVENTS[item.id] || [];
+  return (PROFILE_EVENTS[item.id] || []).map(([time, detail]) => [fullDateTime(time), detail]);
 }
 
 function ipSessionLogs(item) {
-  return IP_SESSION_LOGS[item.id] || [];
+  const base = (IP_SESSION_LOGS[item.id] || []).map(([time, ip, cc, country, region, lat, lon, action]) =>
+    [fullDateTime(time), ip, cc, country, region, lat, lon, action]
+  );
+  const hasNormal = base.filter(([, , , , , , , action]) => /normal customer login/i.test(action || "")).length >= 2;
+  const anchor = base.find(([, ip]) => ip && ip !== "-") || ["", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", ""];
+  const normalRows = hasNormal ? [] : [
+    ["06/24/2026 08:14 AM", anchor[1], anchor[2], anchor[3], anchor[4], anchor[5], anchor[6], "normal customer login"],
+    ["06/29/2026 06:37 PM", anchor[1], anchor[2], anchor[3], anchor[4], anchor[5], anchor[6], "normal customer login"]
+  ];
+  const txIp = transactionIpFor(item);
+  const transactionRows = transactionActivity(item)
+    .filter(([time, type]) => /^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}\s+[AP]M$/i.test(time) && !/Email|Returned Item|Aggregation/i.test(type))
+    .filter(([time]) => !base.some(([sessionTime]) => sessionTime === time))
+    .map(([time, type]) => [time, txIp[1], txIp[2], txIp[3], txIp[4], txIp[5], txIp[6], type]);
+  const profileRows = profileEvents(item)
+    .filter(([time]) => /^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}\s+[AP]M$/i.test(time))
+    .filter(([time]) => !base.some(([sessionTime]) => sessionTime === time) && !transactionRows.some(([sessionTime]) => sessionTime === time))
+    .map(([time, detail]) => [time, txIp[1], txIp[2], txIp[3], txIp[4], txIp[5], txIp[6], detail]);
+  return [...normalRows, ...base, ...profileRows, ...transactionRows];
 }
 
 function expectedTypologies(item) {
@@ -2371,19 +2476,37 @@ function typologySelectionLabel(choice) {
   return state.selectedClassification === choice ? "Primary" : "Also";
 }
 
+function fraudGuideDefinition(choice) {
+  const entry = FRAUD_GUIDE.find(([title]) => title === choice);
+  return entry ? entry[1] : "Review the fraud type guide for this definition.";
+}
+
 function evidenceChain(item) {
   return EVIDENCE_CHAINS[item.id] || {
     pieces: [...item.redFlags.slice(0, 2), ...item.evidence.map((ev) => ev.title).slice(0, 2)],
-    summary: "The right call comes from connecting the alert reason, transaction activity, customer baseline, and supporting documentation instead of relying on one isolated fact."
+    summary: "The right call comes from connecting the alert reason, transaction activity, customer profile, and supporting documentation instead of relying on one isolated fact."
   };
 }
 
 function evidenceOptions(item) {
+  return redFlagObservationOptions(item);
+}
+
+function redFlagObservationOptions(item) {
+  const neutral = [
+    "Customer has an established account history",
+    "Activity occurred from a known customer device",
+    "Customer has ordinary grocery or pharmacy activity",
+    "Prior alert was explained by customer context",
+    "Documentation packet includes IP/session data",
+    "Customer profile includes occupation and normal geography",
+    "A support note exists in the case file",
+    "The alert was routed for manual review"
+  ];
   return Array.from(new Set([
     ...Array.from(state.flaggedEvidence || []),
     ...item.redFlags,
-    ...item.evidence.map((ev) => ev.title),
-    ...evidenceChain(item).pieces
+    ...neutral.slice(0, 4)
   ])).slice(0, 10);
 }
 
@@ -2398,7 +2521,7 @@ function flagButton(label) {
 }
 
 function evidenceSupportBonus(item) {
-  const expected = evidenceChain(item).pieces;
+  const expected = item.redFlags;
   const selected = Array.from(state.selectedEvidence);
   if (!selected.length) return 0;
   const matchesExpected = (choice) => expected.some((piece) => choice === piece || choice.includes(piece) || piece.includes(choice));
@@ -2574,20 +2697,21 @@ function caseObjective(item) {
 
 function caseTakeaway(item) {
   const expected = EXPECTED_SAR_DECISIONS[item.id];
+  if (item.id === "b1") return "Takeaway: attackers may move funds internally first, such as savings to checking, before sending money out. That staging step can confuse the customer because the first missing funds appear as an internal movement instead of an external payment.";
   if (expected === "Close - no fraud found") return "Takeaway: no fraud found means the alert was explained by the evidence.";
   if (expected === "Fraud confirmed - no SAR required (below threshold)") return "Takeaway: below-threshold fraud is still fraud. Document it and handle customer remediation separately from SAR filing.";
   if (expected === "File SAR") return "Takeaway: SAR decisions depend on suspicious activity, amount, suspect information, and aggregation.";
   if (expected === "File SAR + escalate to law enforcement/APS") return "Takeaway: elder or vulnerable adult exploitation can require both SAR filing and external escalation.";
-  if (expected === "Continuing activity review") return "Takeaway: continuing activity is reviewed on a follow-up cycle rather than treated like a brand-new one-off alert.";
+  if (expected === "Continuing activity review") return "Takeaway: when suspicious activity continues after a SAR has already been filed, the case is handled as continuing activity review. The follow-up SAR is filed on the review cycle instead of treating it as a brand-new first-time SAR.";
   return "Takeaway: use the complete evidence picture before choosing the disposition.";
 }
 
 function evidenceSupportScore(item) {
   const score = evidenceSupportBonus(item);
-  if (score === 20) return ["Evidence support", 20, "Selected the key evidence without unsupported extras."];
-  if (score === 12) return ["Evidence support", 12, "Selected enough relevant evidence, but missed part of the chain or included one weaker item."];
-  if (score === 6) return ["Evidence support", 6, "Selected some relevant evidence, but the support was incomplete."];
-  return ["Evidence support", 0, "No evidence selected that clearly supported the conclusion."];
+  if (score === 20) return ["Red flags", 20, "Identified the key red flags without unsupported extras."];
+  if (score === 12) return ["Red flags", 12, "Identified enough red flags, but missed part of the pattern or included one weaker item."];
+  if (score === 6) return ["Red flags", 6, "Identified some red flags, but the support was incomplete."];
+  return ["Red flags", 0, "No selected observations clearly supported the conclusion."];
 }
 
 function typologyScore(item) {
@@ -2805,23 +2929,23 @@ function howScreen() {
       ["What a fraud investigator does", "A fraud investigator reviews alerts, compares activity to the customer's normal behavior, documents the facts, and decides whether the case should be closed, escalated, or reported."],
       ["What an alert is", "An alert is a signal that something may need review. It can come from a customer calling in or from a monitoring system noticing unusual activity."],
       ["What a SAR is", "A SAR is a Suspicious Activity Report. When suspicious activity meets reporting rules, a financial institution files it with FinCEN, the U.S. government office that receives these reports."],
-      ["Your job in this app", "Read the alert like a case file: compare the customer baseline, transactions, profile events, IP/session data, notes, and evidence before making the call."]
+      ["Your job in this app", "Read the alert like a case file: compare the customer profile, transactions, profile events, IP/session data, notes, and evidence before making the call."]
     ].map(([title, body]) => `<article class="info-card"><h3>${title}</h3><p>${body}</p></article>`).join("")}
     ${[
-      ["Review the alert", "Transaction details, customer notes, red flags, profile events, IP/session data, and evidence are separated so the case feels like an investigation."],
-      ["Select supporting evidence", "Choose the pieces of evidence that actually support your conclusion. Good investigations connect multiple facts."],
+      ["Review the alert", "Transaction details, customer notes, profile events, IP/session data, and evidence are separated so the case feels like an investigation."],
+      ["Identify red flags", "Choose the observations that actually support your conclusion. Good investigations connect multiple facts."],
       ["Choose typologies", "Some cases have overlap. Pick one primary typology, then select any secondary typology the evidence also supports."],
       ["Choose the disposition", "Use the short button label, then read the smaller text. No fraud found, fraud with no SAR, and File SAR are different outcomes."],
       ["Write the SAR narrative", "For SAR-worthy cases, use the tap builder to assemble who, what, when, where, and how. Expert cases also offer optional Pro Text."],
       ["Use hints", "Hints guide your thinking, but each hint lowers your possible score."],
-      ["Submit the review", "Supporting evidence, typology, and disposition are all required before submitting."],
+      ["Submit the review", "Red flag selection, typology, and disposition are all required before submitting."],
       ["Learn from the result", "Every answer includes a grade, documentation focus, explanation, disposition feedback, and investigator lesson."]
     ].map(([title, body]) => `<article class="info-card"><h3>${title}</h3><p>${body}</p></article>`).join("")}
     <h3 class="section-title">Fraud Type Guide</h3>
     ${FRAUD_GUIDE.map(([title, body]) => `<article class="info-card guide-card"><h3>${title}</h3><p>${body}</p></article>`).join("")}
     <h3 class="section-title">Scoring</h3>
     <article class="info-card">
-      <p>Training mode rewards careful learning. Challenge mode adds speed pressure. Correct typology, evidence support, disposition, and unused hints raise your grade. Wrong answers still earn 20 points for completing the review.</p>
+      <p>Training mode rewards careful learning. Challenge mode adds speed pressure. Correct typology, red flag selection, disposition, and unused hints raise your grade. Wrong answers still earn 20 points for completing the review.</p>
     </article>
     <h3 class="section-title">SAR Threshold Note</h3>
     <article class="info-card">
@@ -2873,6 +2997,7 @@ function playScreen() {
   const potentialLoss = POTENTIAL_LOSS[item.id] || "Unknown";
   const suspectInfo = SUSPECT_INFO[item.id] || "Suspect/recipient information not available.";
   const [sourceType, sourceReason] = ALERT_SOURCES[item.id] || ["System-generated", "Alert generated for review."];
+  const priorHistory = priorCaseHistory(item);
   const docs = documentationPacket(item);
   const transactions = transactionActivity(item);
   const profiles = profileEvents(item);
@@ -2885,12 +3010,6 @@ function playScreen() {
       title: "Customer Notes",
       tag: "Customer Context",
       body: `<p>${item.notes}</p>`
-    },
-    {
-      key: "redFlags",
-      title: "Red Flags",
-      tag: `${item.redFlags.length} Signals`,
-      body: `<div class="red-flags">${item.redFlags.map((flag) => `<span class="flag-chip">${flag}</span>`).join("")}</div>`
     },
     ...(profiles.length ? [{
       key: "profile",
@@ -2939,6 +3058,7 @@ function playScreen() {
           <div><span>Alert ID</span><strong>${alertId(item)}</strong></div>
           <div><span>Alert Source</span><strong>${sourceType}</strong></div>
           <div><span>Alert Reason</span><strong>${sourceReason}</strong></div>
+          <div><span>Prior Case History</span><strong>${priorHistory}</strong></div>
           <div><span>Potential Loss</span><strong>${potentialLoss}</strong></div>
           <div><span>Suspect / Recipient</span><strong>${suspectInfo}</strong></div>
         </div>
@@ -2946,8 +3066,8 @@ function playScreen() {
       </div>
 
       <div class="file-section">
-        <h3>Customer Baseline</h3>
-        <p class="file-help">Unusual only means something when compared with normal customer behavior.</p>
+        <h3>Customer Profile</h3>
+        <p class="file-help">Unusual only means something when compared with the customer's profile and normal behavior.</p>
         <div class="baseline-list">
           ${baseline.map((line) => `<div><span>${line}</span>${flagButton(line)}</div>`).join("")}
         </div>
@@ -2964,7 +3084,7 @@ function playScreen() {
 
       <div class="file-section notepad-section">
         <h3>Flagged Evidence</h3>
-        <p class="file-help">Tap Flag on anything you would cite in your decision. Flagged items are preselected in Evidence Support and shown as narrative reference.</p>
+        <p class="file-help">Tap Flag on anything you would cite in your decision. Flagged items are preselected in Identify the Red Flags and shown as narrative reference.</p>
         <div class="my-notes">${Array.from(state.flaggedEvidence).length ? Array.from(state.flaggedEvidence).map((item) => `<div>${escapeHtml(item)}</div>`).join("") : "<p>No flagged evidence yet.</p>"}</div>
         <details class="optional-notepad">
           <summary>Optional typed notes</summary>
@@ -2992,24 +3112,29 @@ function playScreen() {
       </div>
 
       <div class="file-section">
-        <h3>Evidence Support</h3>
-        <p class="file-help">Select every item you would cite in your decision. Flagged evidence is preselected here.</p>
+        <h3>Identify the Red Flags</h3>
+        <p class="file-help">${state.mode === "Training" ? "Tap the observations that are true red flags. Training mode shows feedback immediately." : "Tap the observations that are true red flags. Challenge mode scores them after submission."}</p>
         <div class="choices compact">
-          ${supportOptions.map((evidence) => `<button class="choice-button ${state.selectedEvidence.has(evidence) ? "selected" : ""}" data-support-evidence="${evidence}"><span>${evidence}</span><span>${evidenceSelectionLabel(evidence)}</span></button>`).join("")}
+          ${supportOptions.map((evidence) => {
+            const selected = state.selectedEvidence.has(evidence);
+            const trainingClass = state.mode === "Training" && selected ? (item.redFlags.includes(evidence) ? "correct-pick" : "wrong-pick") : "";
+            return `<button class="choice-button ${selected ? "selected" : ""} ${trainingClass}" data-support-evidence="${evidence}"><span>${evidence}</span><span>${evidenceSelectionLabel(evidence)}</span></button>`;
+          }).join("")}
         </div>
       </div>
 
       <div class="file-section">
         <h3>Make the Typology Call</h3>
-        <p class="file-help">Select one primary typology first, then select any overlapping typologies that the evidence also supports.</p>
+        <p class="file-help">Select one primary typology first, then select any overlapping typologies that the evidence also supports. Tap i for a plain-language definition.</p>
         <div class="choices">
-          ${CHOICES.map((choice) => `<button class="choice-button ${state.selectedTypologies.has(choice) ? "selected" : ""}" data-classification="${choice}"><span>${choice}</span><span>${typologySelectionLabel(choice)}</span></button>`).join("")}
+          ${CHOICES.map((choice) => `<button class="choice-button ${state.selectedTypologies.has(choice) ? "selected" : ""}" data-classification="${choice}"><span>${choice} <span class="info-dot" data-typology-info="${choice}" aria-label="${choice} definition">i</span></span><span>${typologySelectionLabel(choice)}</span></button>`).join("")}
         </div>
+        ${state.activeTypologyInfo ? `<p class="file-help"><strong>${state.activeTypologyInfo}:</strong> ${fraudGuideDefinition(state.activeTypologyInfo)}</p>` : ""}
       </div>
 
       <div class="file-section">
         <h3>Case Disposition</h3>
-        <p class="file-help">Based on the typology, amount, suspect/recipient information, baseline, and documentation, choose the handling path.</p>
+        <p class="file-help">Based on the typology, amount, suspect/recipient information, customer profile, and documentation, choose the handling path.</p>
         <div class="choices compact">
           ${SAR_CHOICES.map(dispositionButton).join("")}
         </div>
@@ -3052,7 +3177,7 @@ function answerScreen() {
       <div class="score-breakdown">
         ${breakdown.map(([label, points, note]) => `<div class="score-row"><span>${label}</span><strong>${points > 0 ? `+${points}` : points}</strong><em>${note}</em></div>`).join("")}
       </div>
-      <p class="file-help">Scores cap at 100. If everything was right but the score was below 100, it was usually because of hint use or incomplete evidence support.</p>
+      <p class="file-help">Scores cap at 100. If everything was right but the score was below 100, it was usually because of hint use or incomplete red flag selection.</p>
     </article>
     <article class="result-card"><h3>Consequence</h3><p>${caseConsequence(item, result.wasCorrect)}</p></article>
     <article class="result-card"><h3>Documentation focus</h3><p>${DECISIONS_BY_ANSWER[item.correct]}</p></article>
@@ -3060,8 +3185,8 @@ function answerScreen() {
     <article class="result-card"><h3>Disposition</h3><p>${sarText}</p></article>
     <article class="result-card"><h3>Suspect / Threshold Check</h3><p>${suspectInfo}</p></article>
     ${regENoteApplies(item) ? `<article class="result-card"><h3>Reg E note</h3><p>For client-reported unauthorized electronic transactions, banks generally must investigate and may need to reimburse the customer under Regulation E. That customer-protection process is separate from the SAR decision.</p></article>` : ""}
-    <article class="result-card"><h3>Baseline comparison</h3><p>${baseline.join(" ")}</p></article>
-    <article class="result-card"><h3>Evidence support</h3><p>You selected: ${selectedEvidence.length ? selectedEvidence.join(", ") : "none"}.</p></article>
+    <article class="result-card"><h3>Customer Profile comparison</h3><p>${baseline.join(" ")}</p></article>
+    <article class="result-card"><h3>Red flag selection</h3><p>You selected: ${selectedEvidence.length ? selectedEvidence.join(", ") : "none"}.</p></article>
     <article class="result-card"><h3>Why this answer fits</h3><p>${item.explanation}</p></article>
     <article class="result-card"><h3>Why the other calls are weaker</h3><p>${item.other}</p></article>
     <article class="result-card"><h3>Evidence Chain</h3><p>${chain.summary}</p><p class="file-help">Key pieces: ${chain.pieces.join(" -> ")}.</p></article>
@@ -3151,6 +3276,7 @@ function startCase(id) {
   state.selectedClassification = null;
   state.selectedTypologies = new Set();
   state.selectedSarDecision = null;
+  state.activeTypologyInfo = null;
   state.caseNotes = loadCaseNotes(id);
   state.narrativeDraft = loadNarrativeDraft(id);
   state.narrativeFeedback = "";
@@ -3205,7 +3331,14 @@ function bindScreenEvents() {
     button.addEventListener("click", () => startCase(button.dataset.caseId));
   });
   document.querySelectorAll("[data-classification]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      const info = event.target.closest("[data-typology-info]");
+      if (info) {
+        event.stopPropagation();
+        state.activeTypologyInfo = info.dataset.typologyInfo;
+        render();
+        return;
+      }
       const choice = button.dataset.classification;
       if (state.selectedTypologies.has(choice)) {
         state.selectedTypologies.delete(choice);
@@ -3301,7 +3434,7 @@ function bindScreenEvents() {
       }
       if (action === "submit-decision") {
         if (!state.selectedEvidence.size) {
-          alert("Choose at least one piece of supporting evidence before submitting.");
+          alert("Choose at least one red flag before submitting.");
           return;
         }
         if (!state.selectedClassification) {
