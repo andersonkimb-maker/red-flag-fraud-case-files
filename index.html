@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fraud Case Files</title>
+  <meta name="description" content="Red Flag: A Fraud Investigation Game">
+  <title>Red Flag | Fraud Investigation Game</title>
   <style>
 :root {
   --bg: #101827;
@@ -65,7 +66,7 @@ button {
   top: 0;
   z-index: 5;
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 44px minmax(0, 1fr) auto 44px;
   gap: 12px;
   align-items: center;
   padding: 14px 16px 10px;
@@ -173,6 +174,7 @@ button {
 .hero {
   position: relative;
   overflow: hidden;
+  min-height: 0;
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -182,25 +184,25 @@ button {
   box-shadow: var(--shadow);
 }
 
-.case-board {
+.investigator-graphic {
   position: absolute;
-  right: 14px;
-  top: 14px;
+  right: -12px;
+  top: 20px;
   z-index: 0;
-  width: 116px;
-  height: 116px;
-  opacity: 0.18;
+  width: 190px;
+  max-width: 42%;
+  opacity: 0.14;
   pointer-events: none;
 }
 
-.hero > *:not(.case-board) {
+.hero > *:not(.investigator-graphic) {
   position: relative;
   z-index: 1;
 }
 
 .hero h2,
 .hero p {
-  max-width: 360px;
+  max-width: 420px;
 }
 
 .hero h2,
@@ -218,11 +220,34 @@ button {
   line-height: 1.55;
 }
 
+@media (min-width: 460px) {
+  .hero {
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 380px) {
+  .investigator-graphic {
+    width: 150px;
+    opacity: 0.1;
+  }
+}
+
 .button-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
+}
+
+.hero .button-row {
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  max-width: 460px;
+}
+
+.hero .button-row button {
+  width: 100%;
 }
 
 .mode-toggle {
@@ -280,6 +305,45 @@ button {
   background: transparent;
   color: var(--blue);
   padding: 0;
+}
+
+.reset-menu {
+  position: relative;
+  display: grid;
+  justify-items: end;
+}
+
+.reset-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  display: none;
+  width: min(260px, 78vw);
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(16, 24, 39, 0.98);
+  box-shadow: var(--shadow);
+}
+
+.reset-menu.open .reset-menu-panel {
+  display: grid;
+  gap: 6px;
+}
+
+.reset-option {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  padding: 8px 10px;
+}
+
+.reset-option:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .stats-grid,
@@ -980,8 +1044,15 @@ button {
         <svg aria-hidden="true" viewBox="0 0 24 24" class="button-icon"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <div>
-        <p class="eyebrow">Training Simulator</p>
-        <h1>Fraud Case Files</h1>
+        <p class="eyebrow">Fraud Investigation Game</p>
+        <h1>Red Flag</h1>
+      </div>
+      <div class="reset-menu" id="resetMenu">
+        <button class="text-button" id="resetMenuButton" type="button" aria-expanded="false">Reset</button>
+        <div class="reset-menu-panel" aria-label="Reset options">
+          <button class="reset-option" type="button" data-reset-option="case">Restart Case</button>
+          <button class="reset-option" type="button" data-reset-option="game">Reset Game</button>
+        </div>
       </div>
       <button class="icon-button stats-button" id="progressButton" aria-label="View stats" title="Stats">
         <svg aria-hidden="true" viewBox="0 0 24 24" class="button-icon"><path d="M4 19h16"/><path d="M7 16V9"/><path d="M12 16V5"/><path d="M17 16v-4"/></svg>
@@ -1086,7 +1157,7 @@ const CASES = [
     id: "b4",
     title: "The Borrowed Name",
     difficulty: "Beginner",
-    summary: "A new account is opened using a real person's identity, but the real person says they never applied.",
+    summary: "A new account triggers review after the named identity owner contacts support.",
     transaction: {
       Amount: "$310 purchase",
       Time: "14 minutes after approval",
@@ -1095,7 +1166,7 @@ const CASES = [
       Merchant: "Electronics marketplace"
     },
     notes: "The identity owner contacts support after receiving an approval email they did not recognize.",
-    redFlags: ["Real person denies signup", "New device", "Location mismatch", "Fast purchase after approval"],
+    redFlags: ["Identity owner contacted support", "New device", "Location mismatch", "Purchase minutes after approval"],
     evidence: [
       { title: "Identity owner report", body: "The person confirms their name and address are real, but says they did not create the account." },
       { title: "Contact mismatch", body: "The signup email and phone number do not match prior records associated with the identity." }
@@ -1109,7 +1180,7 @@ const CASES = [
     id: "i1",
     title: "The Disputed Designer Bag",
     difficulty: "Intermediate",
-    summary: "A customer claims a purchase was unauthorized after receiving delivery confirmation.",
+    summary: "A high-value purchase dispute arrives while delivery records are still under review.",
     transaction: {
       Amount: "$760",
       Time: "6:18 PM",
@@ -1118,15 +1189,15 @@ const CASES = [
       Merchant: "Luxury resale marketplace"
     },
     notes: "Customer opened a dispute two days after delivery, saying they never made the purchase.",
-    redFlags: ["High value", "Post-delivery dispute", "Known device", "Known address"],
+    redFlags: ["High-value order", "Dispute after delivery notice", "Known device", "Verified address"],
     evidence: [
-      { title: "Delivery proof", body: "Package was delivered to the customer's verified home address." },
+      { title: "Delivery proof pending", body: "Carrier shows a delivery scan, but signature proof and photo confirmation have not been received yet." },
       { title: "Behavior history", body: "Customer has two prior disputes on high-value purchases in the last 90 days." }
     ],
     correct: "First-Party Fraud",
-    explanation: "Known device, known address, delivery confirmation, and repeated post-delivery disputes point toward first-party or friendly fraud.",
-    other: "ATO is less likely because there are no access anomalies. Normal behavior does not fit the dispute pattern.",
-    hints: ["Look at control of the device and benefit from the purchase.", "Repeated disputes after delivery can be a first-party signal."]
+    explanation: "The pattern raises first-party fraud concern, but the delivery evidence is incomplete. Request merchant/carrier documentation before confirming fraud or closing the dispute.",
+    other: "ATO is less likely because there are no access anomalies. A final first-party decision would be premature without the missing delivery records.",
+    hints: ["A dispute pattern can be suspicious without being complete.", "If key delivery proof is missing, more information can be the right disposition."]
   },
   {
     id: "i2",
@@ -1163,16 +1234,16 @@ const CASES = [
       Recipient: "Same receiving account",
       Funding: "Mixed cards and banks"
     },
-    notes: "None of the senders have prior relationships with the recipient.",
-    redFlags: ["Shared recipient", "Clustered timing", "New relationships", "Money movement pattern"],
+    notes: "Three senders report responding to the same fake marketplace listing and being told to send a deposit to the same collector account.",
+    redFlags: ["Shared recipient", "Clustered timing", "Same marketplace listing", "Immediate recipient withdrawal"],
     evidence: [
-      { title: "Network link", body: "Three sender accounts share the same IP subnet during signup." },
+      { title: "Sender statements", body: "Multiple genuine customers describe the same item listing, seller script, and deposit instructions." },
       { title: "Recipient activity", body: "Recipient account withdrew funds immediately after each incoming transfer." }
     ],
-    correct: "Fraud Ring Activity",
-    explanation: "The shared recipient, clustered timing, linked signup signals, and immediate withdrawals support coordinated fraud.",
-    other: "This is not just a one-account issue. The linked network and cash-out pattern point to coordinated recipient activity.",
-    hints: ["Look for connections across accounts, not only one account.", "Shared recipients can reveal organized behavior."]
+    correct: "Third-Party Fraud",
+    explanation: "The shared recipient, matching marketplace story, customer statements, and immediate withdrawals support third-party fraud using a collector account.",
+    other: "The senders appear to be genuine customers, not fraudster-controlled accounts. Focus on the recipient and common scam script.",
+    hints: ["Look for a common story across customers.", "A shared collector account can connect separate victim reports."]
   },
   {
     id: "a1",
@@ -1307,8 +1378,8 @@ const CASES = [
       { title: "Network view", body: "Seven accounts share shipping address variations and buy from the same new seller." },
       { title: "Seller clue", body: "The seller account was created last week and immediately received orders from linked customers." }
     ],
-    correct: "Fraud Ring Activity",
-    explanation: "The individual account looks acceptable, but the network view suggests coordinated merchant/customer collusion or ring activity.",
+    correct: "First-Party Fraud",
+    explanation: "The individual account looks acceptable, but the network view suggests customer and merchant collusion that benefits the account holders.",
     other: "Normal behavior is too narrow because it ignores network signals. ATO is not supported by access clues.",
     hints: ["Expert cases may require looking beyond the single customer.", "Seller and customer links can reveal collusion."]
   },
@@ -1325,7 +1396,7 @@ const CASES = [
       Recipient: "New recipient with no prior connection"
     },
     notes: "Customer says a 'support agent' instructed them to move money to keep it safe.",
-    redFlags: ["Social engineering", "New recipient", "High value", "Urgent instruction"],
+    redFlags: ["72-minute call during transfer", "New recipient", "Above normal amount", "Urgent instruction"],
     evidence: [
       { title: "Session notes", body: "Customer remained on a 72-minute phone call during the transfer attempt." },
       { title: "Recipient risk", body: "Recipient received similar transfers from three unrelated customers this week." }
@@ -1333,7 +1404,7 @@ const CASES = [
     correct: "Third-Party Fraud",
     explanation: "This is third-party fraud because an outside scammer is manipulating the real customer into sending money. The customer may control the device, but the recipient pattern and urgent phone script suggest fraud pressure.",
     other: "ATO is not the best fit because the known device and customer are involved. Normal behavior is unlikely given the scam script and recipient pattern.",
-    hints: ["A customer can be in control and still be victimized.", "Social engineering often points to third-party fraud rather than ATO."]
+    hints: ["A customer can be in control and still be victimized.", "Look at who benefits from the transfer and whether the recipient pattern repeats."]
   },
   {
     id: "i4",
@@ -1348,7 +1419,7 @@ const CASES = [
       Recipient: "New recipient using a recently opened account"
     },
     notes: "Customer says the recipient is a romantic partner overseas who needs money for a medical bill and travel documents.",
-    redFlags: ["Romance script", "Repeated transfers", "New recipient", "Urgent hardship story"],
+    redFlags: ["Escalating requests from online contact", "Repeated transfers", "New recipient", "Urgent hardship story"],
     evidence: [
       { title: "Message pattern", body: "Customer mentions being told not to discuss the transfers with family." },
       { title: "Recipient risk", body: "The recipient account has received similar transfers from multiple unrelated senders." }
@@ -1371,7 +1442,7 @@ const CASES = [
       Recipient: "New recipient labeled Safe Holding"
     },
     notes: "Customer says they were contacted by someone claiming to be from the fraud department.",
-    redFlags: ["Phishing text", "Imposter support agent", "New recipient", "Urgent safe-account story"],
+    redFlags: ["Shortened text link", "Caller claimed to be support", "New recipient", "Safe-account instruction"],
     evidence: [
       { title: "Link history", body: "The customer clicked a shortened URL before the transfer." },
       { title: "Call notes", body: "The caller instructed the customer to move funds to a 'safe account' and stay on the phone." }
@@ -1394,7 +1465,7 @@ const CASES = [
       Recipient: "New recipient with same-day cash-out activity"
     },
     notes: "Customer says the caller told them not to contact anyone because it would 'make the legal situation worse.'",
-    redFlags: ["Elder scam", "Emergency pressure", "Secrecy instruction", "New recipient"],
+    redFlags: ["Emergency phone call", "Pressure to act quickly", "Secrecy instruction", "New recipient"],
     evidence: [
       { title: "Call duration", body: "Customer was on a 49-minute phone call during the transfer attempt." },
       { title: "Recipient activity", body: "Recipient account has received multiple urgent-family-emergency transfers this week." }
@@ -1407,6 +1478,31 @@ const CASES = [
 ];
 
 CASES.push(
+  {
+    id: "a7",
+    title: "The Refund Imposter",
+    difficulty: "Advanced",
+    summary: "A customer calls the number in an unexpected charge email and is pressured to wire back an alleged accidental refund.",
+    transaction: {
+      Amount: "$2,700 wire",
+      Time: "42 minutes after customer called the email number",
+      Device: "Known laptop",
+      Location: "Usual home network",
+      Recipient: "New wire recipient listed as refund recovery"
+    },
+    notes: "Customer says an email claimed they were charged $300. When they called the number, the representative said they would refund it, gained access to the account, then claimed they accidentally refunded $3,000 and would be fired unless the customer wired back $2,700 immediately.",
+    redFlags: ["Email about $300 charge", "Caller claimed to be support", "Remote/account access", "Over-refund pressure", "Urgent wire request"],
+    evidence: [
+      { title: "Email lure", body: "The customer received an email about a $300 charge with a phone number that does not match the legitimate company." },
+      { title: "Access event", body: "During the call, the customer allowed the caller to view or control the online banking session." },
+      { title: "Pressure script", body: "The caller claimed a $3,000 refund was sent by mistake and said they would be fired unless $2,700 was wired back immediately." },
+      { title: "Wire recipient", body: "The wire recipient is new and unrelated to the company named in the email." }
+    ],
+    correct: "Third-Party Fraud",
+    explanation: "This is third-party fraud, specifically refund imposter fraud. An outside scammer uses a fake charge email, impersonates support, creates an over-refund story, and pressures the customer to wire money.",
+    other: "ATO overlaps because the caller gained account access, but the customer was socially engineered into the wire. First-party fraud is weaker because the customer appears to be the victim, not the beneficiary.",
+    hints: ["Unexpected charge emails can be used to steer victims to a phone number.", "An accidental over-refund claim plus urgency is important evidence."]
+  },
   {
     id: "b5",
     title: "The Requested Phone Update",
@@ -1429,6 +1525,54 @@ CASES.push(
     explanation: "The profile change looks suspicious by itself, but the verified call note, known device, normal location, and low-dollar purchase support closing the alert with no fraud found.",
     other: "ATO would require evidence that someone other than the customer took control. Here the profile change is backed by a verified customer request.",
     hints: ["A profile change is not automatically fraud.", "Match the profile event to the call note and later transaction."]
+  },
+  {
+    id: "i5",
+    title: "The Loan Check",
+    difficulty: "Intermediate",
+    summary: "A customer deposits a loan check, spends part of the funds, and is told to send money back before the check returns.",
+    transaction: {
+      Amount: "$3,800 check deposit; $1,450 outgoing transfer",
+      Time: "Transfer sent two days after deposit",
+      Device: "Known phone",
+      Location: "Usual home city",
+      Recipient: "New recipient listed as loan processing"
+    },
+    notes: "Customer says an online lender sent a check to 'verify the account' and instructed them to return part of the money for fees before the loan could be finalized.",
+    redFlags: ["Check returned unpaid", "Loan fee request", "Funds spent before check clears", "New recipient"],
+    evidence: [
+      { title: "Deposit status", body: "The deposited check was returned unpaid after provisional funds were made available." },
+      { title: "Message instructions", body: "The lender told the customer to send money back by P2P for processing fees and warned them not to contact the bank." },
+      { title: "Recipient risk", body: "The receiving account has similar incoming transfers from other recent check-deposit victims." }
+    ],
+    correct: "Third-Party Fraud",
+    explanation: "This is third-party fraud because an outside scammer used a fake loan-check setup to make the customer send real money before the check returned.",
+    other: "First-party fraud is weaker because the customer appears to be the victim of a fake-check loan scam. ATO is not supported because the customer used their known device.",
+    hints: ["Available funds do not always mean a check has cleared.", "Loan fees paid from a new check deposit are a fake-check red flag."]
+  },
+  {
+    id: "i6",
+    title: "The ATM Run",
+    difficulty: "Intermediate",
+    summary: "Several ATM withdrawals hit a customer's account after they report a missing debit card.",
+    transaction: {
+      Amount: "$2,400 total",
+      Time: "Four withdrawals in 38 minutes",
+      Device: "Card and PIN used at ATM",
+      Location: "Two ATMs 19 miles from customer's home",
+      Recipient: "Cash withdrawal"
+    },
+    notes: "Customer says their wallet went missing during lunch and they did not make the withdrawals.",
+    redFlags: ["Missing card", "Rapid ATM withdrawals", "Unusual ATM location", "Daily cash limit reached"],
+    evidence: [
+      { title: "Customer report", body: "Customer reported the debit card missing and denied all ATM withdrawals." },
+      { title: "ATM pattern", body: "Four withdrawals occurred back-to-back at two ATMs the customer has never used." },
+      { title: "Card status", body: "The card was still active when the withdrawals occurred and was blocked after the customer called." }
+    ],
+    correct: "Third-Party Fraud",
+    explanation: "This is third-party fraud because someone outside the customer appears to have used the missing card and PIN to withdraw cash.",
+    other: "Normal behavior is unsupported by the customer report and unusual ATM pattern. First-party fraud would need stronger evidence that the customer benefited or staged the loss.",
+    hints: ["Card-and-PIN activity can still be unauthorized.", "Look at timing, location, and the customer's missing-wallet report."]
   },
   {
     id: "a6",
@@ -1466,7 +1610,7 @@ CASES.push(
       Pattern: "Gradual withdrawals after caregiver access was added"
     },
     notes: "Customer says the nephew 'helps with bills' and becomes upset when asked whether she approved every withdrawal.",
-    redFlags: ["Elder exploitation", "Family member access", "Gradual withdrawals", "Customer defends suspect"],
+    redFlags: ["Family member account access", "Gradual withdrawals", "Customer defends helper", "Customer relies on helper"],
     evidence: [
       { title: "Account access", body: "Nephew was added as online banking helper on 03/01/2026 and then initiated repeated transfers to himself." },
       { title: "Withdrawal pattern", body: "ATM and P2P activity increased from under $300 per month to more than $4,000 per month." },
@@ -1503,7 +1647,7 @@ CASES.push(
   }
 );
 
-const CHOICES = ["Account Takeover", "First-Party Fraud", "Third-Party Fraud", "Elder/Vulnerable Adult Exploitation", "Real Identity Theft", "Synthetic Identity Fraud", "Fraud Ring Activity", "Normal Customer Behavior"];
+const CHOICES = ["Account Takeover", "First-Party Fraud", "Third-Party Fraud", "Elder/Vulnerable Adult Exploitation", "Real Identity Theft", "Synthetic Identity Fraud", "Normal Customer Behavior"];
 const DIFFICULTIES = ["Beginner", "Intermediate", "Advanced", "Expert"];
 const STORAGE_KEY = "redFlagProgressV8";
 const DECISIONS_BY_ANSWER = {
@@ -1513,7 +1657,6 @@ const DECISIONS_BY_ANSWER = {
   "Elder/Vulnerable Adult Exploitation": "Document customer vulnerability indicators, pressure tactics, beneficiary/recipient details, call notes, and escalation steps such as APS or law enforcement referral.",
   "Real Identity Theft": "Document victim statements, identity mismatch details, application profile data, device/IP evidence, and transaction activity.",
   "Synthetic Identity Fraud": "Document thin-file signals, blended identity data, linked accounts, staged repayment, and cash-out behavior.",
-  "Fraud Ring Activity": "Document network links, recipient activity, merchant/customer collusion, shared devices, aggregation, and cash-out behavior.",
   "Normal Customer Behavior": "Document why the alert is explainable, including trusted device, normal location, customer history, and lack of fraud indicators."
 };
 const LESSONS_BY_ANSWER = {
@@ -1523,7 +1666,6 @@ const LESSONS_BY_ANSWER = {
   "Elder/Vulnerable Adult Exploitation": "Lesson: elder or vulnerable adult cases need extra care because the customer may be acting under pressure, fear, or manipulation.",
   "Real Identity Theft": "Lesson: real identity theft uses a real person's information without permission. A victim report matters.",
   "Synthetic Identity Fraud": "Lesson: synthetic identity fraud often uses thin or blended identity signals to build trust before cash-out.",
-  "Fraud Ring Activity": "Lesson: fraud rings often show linked accounts, shared recipients, aggregation, and fast cash-out.",
   "Normal Customer Behavior": "Lesson: one unusual detail is not enough. Good investigators know when the evidence supports closing with no fraud found."
 };
 const EVIDENCE_CHAINS = {
@@ -1548,16 +1690,28 @@ const EVIDENCE_CHAINS = {
     summary: "The phone change looks risky by itself, but the authenticated support call and normal low-dollar purchase afterward support closing with no fraud found."
   },
   i1: {
-    pieces: ["Post-delivery dispute", "Delivery proof", "Behavior history", "Known address"],
-    summary: "The dispute is suspicious because delivery, known address, known device, and repeated prior disputes line up into a first-party pattern."
+    pieces: ["Dispute after delivery notice", "Delivery proof pending", "Behavior history", "Known address"],
+    summary: "The dispute is suspicious, but signature proof and photo confirmation are missing, so the right next step is to request more information."
   },
   i2: {
     pieces: ["Unusual location", "Session history", "Customer context"],
     summary: "The Florida IP is not enough. Travel context and trusted session history explain the location change and support normal behavior."
   },
   i3: {
-    pieces: ["Shared recipient", "Clustered timing", "Network link", "Recipient activity"],
-    summary: "One small transfer is weak. The shared recipient, clustered timing, linked IP subnet, and immediate withdrawal create the fraud pattern."
+    pieces: ["Shared recipient", "Clustered timing", "Sender statements", "Recipient activity"],
+    summary: "One small transfer is weak. The shared recipient, clustered timing, matching customer statements, and immediate withdrawal create the fraud pattern."
+  },
+  i5: {
+    pieces: ["Returned item", "Deposit status", "Message instructions", "Recipient risk"],
+    summary: "The concern comes from provisional funds, a returned item, instructions to send money back, and a new recipient tied to similar victims."
+  },
+  i6: {
+    pieces: ["Missing card", "Customer report", "ATM pattern", "Card status"],
+    summary: "The ATM fraud concern comes from the missing-card report, rapid withdrawals, unusual ATM locations, and card block after the customer called."
+  },
+  a7: {
+    pieces: ["Unexpected charge email", "Email lure", "Access event", "Pressure script", "Wire recipient"],
+    summary: "The pattern is built from the unexpected charge email, callback number, remote/account access, over-refund story, and urgent wire request."
   },
   a1: {
     pieces: ["Limit increase", "New bank", "Max cash advance", "Pattern match", "Shared signal"],
@@ -1592,20 +1746,20 @@ const EVIDENCE_CHAINS = {
     summary: "The collusion concern comes from the network view: linked customer activity routes value to a related seller."
   },
   e3: {
-    pieces: ["Social engineering", "Elder scam", "Call duration", "Recipient activity"],
-    summary: "The elder exploitation concern is supported by pressure tactics, a long call during the transfer, and a recipient with similar urgent-emergency activity."
+    pieces: ["Caller pressure", "Urgent instruction", "Call duration", "Recipient activity"],
+    summary: "The concern is supported by pressure tactics, a long call during the transfer, and a recipient with similar urgent-emergency activity."
   },
   i4: {
-    pieces: ["Romance script", "New recipient", "Repeated payments"],
+    pieces: ["Online contact", "New recipient", "Repeated payments"],
     summary: "The repeated payments are suspicious because they follow a relationship-building story and escalating requests from a new recipient."
   },
   e4: {
-    pieces: ["Emergency pressure", "Elder scam", "Call duration", "Recipient activity"],
-    summary: "The emergency call, secrecy pressure, new recipient, wire, and immediate cash withdrawal connect into elder financial exploitation."
+    pieces: ["Emergency pressure", "Secrecy instruction", "Call duration", "Recipient activity"],
+    summary: "The emergency call, secrecy pressure, new recipient, wire, and immediate cash withdrawal connect into a high-risk pattern."
   },
   e5: {
-    pieces: ["Elder exploitation", "Family member access", "Withdrawal pattern", "Customer vulnerability"],
-    summary: "The trusted-person access, gradual withdrawals, customer dependency, and age/vulnerability connect into family-member elder exploitation."
+    pieces: ["Family-member access", "Withdrawal pattern", "Customer dependency", "Customer vulnerability"],
+    summary: "The trusted-person access, gradual withdrawals, customer dependency, and vulnerability indicators connect into a high-risk pattern."
   },
   e6: {
     pieces: ["Unauthorized ACH", "ACH batch", "Session mismatch", "Customer report"],
@@ -1627,16 +1781,19 @@ const EXPECTED_SAR_DECISIONS = {
   b3: "Fraud confirmed - no SAR required (below threshold)",
   b4: "Fraud confirmed - no SAR required (below threshold)",
   b5: "Close - no fraud found",
-  i1: "Fraud confirmed - no SAR required (below threshold)",
+  i1: "Request more information",
   i2: "Close - no fraud found",
   i3: "File SAR",
+  i5: "Fraud confirmed - no SAR required (below threshold)",
+  i6: "Fraud confirmed - no SAR required (below threshold)",
+  a7: "Fraud confirmed - no SAR required (below threshold)",
   a1: "Fraud confirmed - no SAR required (below threshold)",
   a2: "Fraud confirmed - no SAR required (below threshold)",
   a4: "Fraud confirmed - no SAR required (below threshold)",
   a3: "Close - no fraud found",
   a6: "Close - no fraud found",
   e1: "Continuing activity review",
-  e2: "File SAR",
+  e2: "Request more information",
   e3: "File SAR + escalate to law enforcement/APS",
   i4: "Fraud confirmed - no SAR required (below threshold)",
   a5: "Fraud confirmed - no SAR required (below threshold)",
@@ -1650,16 +1807,19 @@ const SAR_RATIONALES = {
   b3: "The synthetic identity fraud is supported, but the $190 loss is below threshold. Confirm fraud, document it, and monitor for aggregation.",
   b4: "The victim report and mismatched application data support real identity theft, but the $310 loss is below threshold. Confirm fraud and document the victim report.",
   b5: "The phone update is backed by an authenticated customer call and normal activity afterward. Close with no fraud found and document the call note.",
-  i1: "The first-party fraud pattern is supported, but the $760 exposure is below threshold. Confirm fraud, document delivery and dispute evidence, and monitor repeated behavior.",
+  i1: "Request merchant and carrier documentation before making the disposition. The known device, verified address, and dispute history are suspicious, but signature proof/photo delivery confirmation is missing, so filing or closing would be premature.",
   i2: "Travel context explains the new geography and trusted-device activity. Close with no fraud found; do not treat IP location alone as proof of fraud.",
   i3: "The individual transfers are small, but aggregated suspicious activity to an identified recipient exceeds $5,000. File SAR based on aggregation.",
+  i5: "The fake-check loan scam is confirmed, but the displayed outgoing loss is below threshold. Confirm fraud, document the returned item, and preserve messages and recipient details.",
+  i6: "The ATM withdrawal fraud is confirmed, but no individual suspect is identified and the displayed loss is below the no-suspect threshold. Confirm fraud and preserve the card, ATM, and customer-report evidence.",
+  a7: "The refund imposter scam is confirmed, but the displayed wire is below threshold. Confirm fraud and preserve the email, call notes, access details, and wire recipient information.",
   a1: "The staged synthetic pattern is confirmed but the displayed loss is below threshold. Confirm fraud, document linked accounts, and monitor for aggregation.",
   a2: "ATO indicators are complete, but the amount shown is below threshold. Confirm fraud and preserve the SIM/profile/access timeline.",
   a4: "Real identity theft is confirmed and the loss is $12,400, but no individual suspect is identifiable. This is below the $25,000 no-suspect threshold, so the uncomfortable but correct training disposition is fraud confirmed with no SAR required.",
   a3: "The activity aligns with normal grocery and pharmacy behavior. Close with no fraud found and document the baseline comparison.",
   a6: "The wire is supported by closing documents and an authenticated customer call. Close with no fraud found even though the amount is large.",
   e1: "This resembles ongoing first-party abuse on a subject already under review. Use continuing activity review and follow the 90-day follow-up SAR cycle when applicable.",
-  e2: "The ring shows $7,850 in aggregated suspicious activity with identifiable linked participants, so the $5,000 identified-suspect threshold is met.",
+  e2: "Request more information before filing. The seller/buyer links are suspicious, but the case needs the pending aggregation detail and merchant ownership records before deciding whether the $5,000 identified-suspect threshold is truly met.",
   e3: "Elder financial exploitation should be escalated even when the dollar amount is below a simplified threshold. File SAR and escalate to law enforcement or APS as policy requires.",
   i4: "Romance scam indicators are present and the customer is working-age in this file, but the displayed loss is below threshold. Confirm fraud and document recipient risk and customer notes.",
   a5: "Phishing/imposter scam indicators are complete, but the displayed amount is below threshold. Confirm fraud and preserve link, call, and safe-account evidence.",
@@ -1676,17 +1836,20 @@ const POTENTIAL_LOSS = {
   i1: "$760",
   i2: "$305",
   i3: "$6,125 aggregated",
+  i5: "$1,450",
+  i6: "$2,400",
+  a7: "$2,700",
   a1: "$600",
   a2: "$350",
   a4: "$12,400",
   a3: "$171",
   a6: "$9,500",
   e1: "$1,140 current review; continuing activity",
-  e2: "$7,850 aggregated",
+  e2: "~$7,850 preliminary estimate; full linked-account aggregation pending",
   e3: "$1,200",
   i4: "$775",
   a5: "$880",
-  e4: "$27,400",
+  e4: "$2,400",
   e5: "$18,750",
   e6: "$31,200"
 };
@@ -1699,6 +1862,9 @@ const SUSPECT_INFO = {
   i1: "Identified customer is the suspected first-party actor; goods shipped to verified home address.",
   i2: "No suspect. Travel activity matches customer context.",
   i3: "Identified shared recipient: Darius M., receiving account ending 7719; no prior relationship to senders.",
+  i5: "Identified recipient: account holder Riley T.; recipient was presented as loan processing, but has similar fake-check incoming transfers.",
+  i6: "No identifiable individual suspect; ATM cash withdrawals captured by terminal and camera review request.",
+  a7: "Identified wire recipient: M. Vargas; stranger to customer and unrelated to the company named in the email.",
   a1: "Identifiable synthetic-account cluster using related emails and payout account ending 9081.",
   a2: "Identified recipient: Lena P. on Zelle; customer denies relationship after SIM event.",
   a3: "No suspect. Activity matches customer baseline.",
@@ -1706,7 +1872,7 @@ const SUSPECT_INFO = {
   a5: "Identified recipient labeled Safe Holding; account holder name Devon R.; stranger to customer.",
   a6: "No suspect. Recipient is verified title company from closing documents.",
   e1: "Identified customer and related merchant accounts are the suspected first-party/collusion actors.",
-  e2: "Identified seller account and linked buyer accounts; seller owner K. Nolan receives aggregated settlement.",
+  e2: "Seller account and linked buyer accounts are under review; ownership records for possible seller owner K. Nolan have been requested but are not yet verified.",
   e3: "Identified wire recipient: Oliver K.; stranger to customer; recipient has similar emergency-transfer activity.",
   i4: "Identified online contact: profile name Elena M.; receiving PayPal and wire details available.",
   e4: "Identified wire recipient: Thomas B.; stranger to customer; funds cashed out within minutes.",
@@ -1722,6 +1888,9 @@ const ALERT_SOURCES = {
   i1: ["System-generated", "Repeat high-value dispute pattern triggered review."],
   i2: ["System-generated", "Location anomaly triggered while customer was traveling."],
   i3: ["System-generated", "Multiple accounts sent funds to the same new recipient."],
+  i5: ["Client-reported", "Customer called after the deposited loan check returned and left a negative balance."],
+  i6: ["Client-reported", "Customer reported a missing debit card and unauthorized ATM withdrawals."],
+  a7: ["Client-reported", "Customer called after wiring funds back to a caller claiming to fix a mistaken refund."],
   a1: ["System-generated", "Limit increase followed by max cash advance and payout change."],
   a2: ["Client-reported", "Customer reported phone service disruption and an unrecognized transfer."],
   a4: ["Client-reported", "Victim reported personal information was used after wallet theft."],
@@ -1769,6 +1938,24 @@ const TRANSACTION_ACTIVITY = {
     ["07/02/2026 10:44 AM", "Aggregation", "$6,125", "42 linked transfers to Darius M. over 14 days"],
     ["07/02/2026 10:52 AM", "Immediate Movement", "$6,125", "Recipient withdraws combined funds"]
   ],
+  i5: [
+    ["06/30/2026 09:11 AM", "Mobile Deposit", "$3,800", "Loan check deposited and provisional funds made available"],
+    ["07/01/2026 12:28 PM", "Store Purchase", "$220", "Customer spends part of provisional funds"],
+    ["07/02/2026 10:16 AM", "Zelle", "$1,450", "Transfer to new recipient for alleged loan processing fees"],
+    ["07/03/2026 08:42 AM", "Returned Item", "$3,800", "Deposited check returned unpaid"]
+  ],
+  i6: [
+    ["07/02/2026 12:14 PM", "ATM Withdrawal", "$600", "First withdrawal after wallet reported missing"],
+    ["07/02/2026 12:27 PM", "ATM Withdrawal", "$600", "Second withdrawal at same terminal"],
+    ["07/02/2026 12:46 PM", "ATM Withdrawal", "$600", "Third withdrawal at nearby ATM"],
+    ["07/02/2026 12:52 PM", "ATM Withdrawal", "$600", "Daily cash limit reached before card block"]
+  ],
+  a7: [
+    ["07/02/2026 09:08 AM", "Email", "$300", "Customer receives fake charge notice with callback number"],
+    ["07/02/2026 09:31 AM", "Account Access", "-", "Customer allows caller to view or control online banking session"],
+    ["07/02/2026 09:46 AM", "Wire Setup", "$2,700", "New recipient added for alleged refund correction"],
+    ["07/02/2026 09:50 AM", "Wire", "$2,700", "Customer wires funds under urgent over-refund pressure"]
+  ],
   a1: [
     ["06/03/2026 12:14 PM", "Store Purchase", "$42", "Small purchase paid on time"],
     ["07/02/2026 09:14 AM", "Cash Advance", "$600", "Max advance after limit increase"],
@@ -1796,7 +1983,7 @@ const TRANSACTION_ACTIVITY = {
   e2: [
     ["06/18/2026 10:35 AM", "Store Purchase", "$260", "Marketplace order from linked customer"],
     ["06/19/2026 11:20 AM", "Merchant Settlement", "$260", "New seller receives order volume from linked accounts"],
-    ["07/02/2026 03:15 PM", "Aggregation", "$7,850", "31 linked buyer orders settled to same seller over 30 days"]
+    ["07/02/2026 03:15 PM", "Preliminary Aggregation", "~$7,850", "Preliminary estimate across 31 possible linked buyer orders; full linked-account aggregation pending"]
   ],
   e3: [
     ["04:52 PM", "Wire", "$1,200", "Outgoing transfer to new recipient"]
@@ -1810,8 +1997,8 @@ const TRANSACTION_ACTIVITY = {
     ["03:38 PM", "Zelle", "$880", "Transfer to recipient labeled Safe Holding"]
   ],
   e4: [
-    ["07/02/2026 11:26 AM", "Wire", "$27,400", "Outgoing transfer to new recipient"],
-    ["07/02/2026 11:34 AM", "Immediate Cash Withdrawal", "$27,400", "Recipient cashes out same day"]
+    ["07/02/2026 11:26 AM", "Wire", "$2,400", "Outgoing transfer to new recipient"],
+    ["07/02/2026 11:34 AM", "Immediate Cash Withdrawal", "$2,400", "Recipient cashes out same day"]
   ],
   e5: [
     ["03/04/2026 09:10 AM", "ACH", "$1,200", "Transfer to nephew after helper access added"],
@@ -1908,6 +2095,21 @@ const IP_SESSION_LOGS = {
     ["07/02/2026 10:29 AM", "192.0.2.77", "US", "United States", "North Carolina", "35.2271", "-80.8431", "recipient withdrawal"],
     ["07/02/2026 10:52 AM", "192.0.2.77", "US", "United States", "North Carolina", "35.2271", "-80.8431", "cash-out"]
   ],
+  i5: [
+    ["06/30/2026 09:10 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal login"],
+    ["06/30/2026 09:11 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "mobile deposit"],
+    ["07/02/2026 10:16 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "transfer to new recipient"]
+  ],
+  i6: [
+    ["07/02/2026 08:05 AM", "104.28.50.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal login"],
+    ["07/02/2026 12:14 PM", "-", "-", "-", "-", "-", "-", "no online banking session during ATM withdrawal"],
+    ["07/02/2026 01:18 PM", "104.28.50.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "card block after customer report"]
+  ],
+  a7: [
+    ["07/02/2026 08:52 AM", "104.28.64.22", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal login"],
+    ["07/02/2026 09:31 AM", "198.51.100.88", "US", "United States", "Nevada", "36.1699", "-115.1398", "remote-access session during call"],
+    ["07/02/2026 09:50 AM", "198.51.100.88", "US", "United States", "Nevada", "36.1699", "-115.1398", "wire setup"]
+  ],
   a1: [
     ["06/03/2026 12:02 PM", "198.51.100.31", "US", "United States", "Arizona", "33.4484", "-112.0740", "purchase"],
     ["07/02/2026 09:10 AM", "198.51.100.31", "US", "United States", "Arizona", "33.4484", "-112.0740", "bank change"],
@@ -1941,7 +2143,7 @@ const IP_SESSION_LOGS = {
   e2: [
     ["06/18/2026 10:35 AM", "192.0.2.201", "US", "United States", "Tennessee", "36.1627", "-86.7816", "buyer order"],
     ["06/19/2026 11:20 AM", "192.0.2.209", "US", "United States", "Tennessee", "36.1627", "-86.7816", "seller settlement"],
-    ["07/02/2026 03:15 PM", "192.0.2.209", "US", "United States", "Tennessee", "36.1627", "-86.7816", "aggregation review"]
+    ["07/02/2026 03:15 PM", "192.0.2.209", "US", "United States", "Tennessee", "36.1627", "-86.7816", "preliminary aggregation review"]
   ],
   e3: [
     ["07/02/2026 04:41 PM", "172.58.42.90", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
@@ -1984,6 +2186,9 @@ const CUSTOMER_BASELINES = {
   i2: ["DOB: 07/07/1989 (age 36)", "Account tenure: 2 years", "Occupation/income: nurse, about $71k/year", "Typical activity: restaurants, rideshare, and retail under $180", "Normal geography: usually South Carolina, with documented vacation travel this week"],
   i3: ["DOBs: mixed sender profiles, all listed ages 24-44", "Account tenure: mixed new and existing accounts", "Occupation/income: varies by sender", "Typical activity: no prior relationship to shared recipient", "Normal geography: multiple locations with linked recipient behavior"],
   i4: ["DOB: 05/18/1982 (age 44)", "Account tenure: 5 years", "Occupation/income: school administrator, about $61k/year", "Typical activity: utilities, groceries, and small family transfers", "Normal geography: home state with no prior payments to recipient"],
+  i5: ["DOB: 03/04/1994 (age 32)", "Account tenure: 3 years", "Occupation/income: hourly warehouse worker, about $44k/year", "Typical activity: payroll deposits, debit purchases, and occasional mobile deposits under $600", "Normal geography: home city; no prior loan-processing transfers"],
+  i6: ["DOB: 12/15/1981 (age 44)", "Account tenure: 6 years", "Occupation/income: restaurant manager, about $57k/year", "Typical activity: debit purchases and occasional ATM withdrawals under $120", "Normal geography: home neighborhood ATMs; no prior rapid cash-limit activity"],
+  a7: ["DOB: 09/27/1984 (age 41)", "Account tenure: 5 years", "Occupation/income: office coordinator, about $56k/year", "Typical activity: bill pay, debit purchases, and occasional ACH under $500", "Normal geography: home network; no prior outgoing wires to unfamiliar recipients"],
   a1: ["DOB on application: 03/30/1998 (age 28)", "Account tenure: 5 months", "Occupation/income: gig worker, about $38k/year stated", "Typical activity: small purchases paid on time before limit increase", "Normal geography: same device family across linked accounts"],
   a2: ["DOB: 10/08/1987 (age 38)", "Account tenure: 4 years", "Occupation/income: office manager, about $58k/year", "Typical activity: bill pay and known-recipient P2P under $200", "Normal geography: Georgia access before SIM/profile event"],
   a3: ["DOB: 08/21/1975 (age 50)", "Account tenure: 7 years", "Occupation/income: part-time bookkeeper, about $43k/year", "Typical activity: groceries and pharmacy purchases under $100", "Normal geography: usual neighborhood and known Android"],
@@ -2014,7 +2219,6 @@ const FRAUD_GUIDE = [
   ["Elder/Vulnerable Adult Exploitation", "A customer who is older or vulnerable is pressured, tricked, or controlled into moving money. These cases often need escalation beyond a normal fraud review."],
   ["Real Identity Theft", "A real person's identity is used without permission. Victim reports, stolen documents, and mismatched contact details matter."],
   ["Synthetic Identity Fraud", "A fake or blended identity is built to look real, often with thin files, new contact details, staged repayment, and later cash-out."],
-  ["Fraud Ring Activity", "Linked accounts or people move fraud proceeds through shared recipients, seller accounts, withdrawals, or other cash-out routes."],
   ["Normal Customer Behavior", "The activity looks explainable when the full context is reviewed. Good investigators know when to close with no fraud found."]
 ];
 
@@ -2032,6 +2236,7 @@ const state = {
   selectedTypologies: new Set(),
   selectedSarDecision: null,
   caseNotes: "",
+  narrativeDraft: "",
   narrativeFeedback: "",
   narrativeSelections: new Set(),
   narrativeProMode: false,
@@ -2059,6 +2264,53 @@ function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
 }
 
+function clearActiveCaseState() {
+  state.selectedClassification = null;
+  state.selectedTypologies = new Set();
+  state.selectedEvidence = new Set();
+  state.flaggedEvidence = new Set();
+  state.expandedEvidence = new Set();
+  state.openClues = new Set(["summary"]);
+  state.selectedSarDecision = null;
+  state.caseNotes = "";
+  state.narrativeDraft = "";
+  state.hintCount = 0;
+  state.narrativeFeedback = "";
+  state.narrativeSelections = new Set();
+  state.narrativeProMode = false;
+  state.lastResult = null;
+}
+
+function restartCurrentCase() {
+  if (!state.selectedCaseId) {
+    navigate("cases");
+    return;
+  }
+  if (!confirm("Restart this case? Your saved overall progress will stay.")) return;
+  localStorage.removeItem(`redFlagNotes_${state.selectedCaseId}`);
+  const id = state.selectedCaseId;
+  clearActiveCaseState();
+  state.caseNotes = "";
+  startCase(id);
+}
+
+function resetGameProgress() {
+  if (!confirm("Reset the whole game and clear all saved progress?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  CASES.forEach((item) => {
+    localStorage.removeItem(`redFlagNotes_${item.id}`);
+    localStorage.removeItem(`redFlagNarrative_${item.id}`);
+  });
+  state.screen = "home";
+  state.selectedCaseId = null;
+  clearActiveCaseState();
+  state.history = ["home"];
+  state.progress = loadProgress();
+  state.mode = "Training";
+  state.pendingScrollTop = true;
+  render();
+}
+
 function completedCases() {
   return Object.values(state.progress.cases).filter(Boolean);
 }
@@ -2073,14 +2325,7 @@ function alertId(item) {
 }
 
 function documentationPacket(item) {
-  const base = ["IP address", "profile information", "transaction activity"];
-  if (item.correct === "Third-Party Fraud") return [...base, "call notes", "recipient history"];
-  if (item.correct === "Account Takeover") return [...base, "device history", "authentication events"];
-  if (item.correct === "Real Identity Theft") return [...base, "identity application data", "victim statement"];
-  if (item.correct === "Synthetic Identity Fraud") return [...base, "identity profile", "linked account signals"];
-  if (item.correct === "First-Party Fraud") return [...base, "dispute history", "repayment behavior"];
-  if (item.correct === "Fraud Ring Activity") return [...base, "network links", "recipient/seller aggregation"];
-  return [...base, "customer history"];
+  return ["IP/session data", "profile information", "transaction activity", "customer notes", "recipient/suspect information"];
 }
 
 function transactionActivity(item) {
@@ -2110,6 +2355,15 @@ function saveCaseNotes() {
 
 function loadCaseNotes(id) {
   return localStorage.getItem(`redFlagNotes_${id}`) || "";
+}
+
+function saveNarrativeDraft() {
+  if (!state.selectedCaseId) return;
+  localStorage.setItem(`redFlagNarrative_${state.selectedCaseId}`, state.narrativeDraft || "");
+}
+
+function loadNarrativeDraft(id) {
+  return localStorage.getItem(`redFlagNarrative_${id}`) || "";
 }
 
 function typologySelectionLabel(choice) {
@@ -2149,7 +2403,7 @@ function evidenceSupportBonus(item) {
   if (!selected.length) return 0;
   const matchesExpected = (choice) => expected.some((piece) => choice === piece || choice.includes(piece) || piece.includes(choice));
   const relevant = selected.filter(matchesExpected).length;
-  const irrelevant = selected.filter((choice) => !matchesExpected(choice)).length;
+  const irrelevant = selected.filter((choice) => !matchesExpected(choice) && !state.flaggedEvidence.has(choice)).length;
   if (relevant >= Math.min(3, expected.length) && irrelevant === 0) return 20;
   if (relevant >= 2 && irrelevant <= 1) return 12;
   if (relevant >= 1) return 6;
@@ -2178,30 +2432,86 @@ function narrativePrompt(item) {
 
 function narrativeFragments(item) {
   const txns = transactionActivity(item);
+  const profiles = profileEvents(item);
   const suspect = SUSPECT_INFO[item.id] || "recipient information was reviewed.";
   const chain = evidenceChain(item);
   const firstTxn = txns[0] || ["the review date", "transaction", "unknown amount", "activity"];
+  const sessions = ipSessionLogs(item);
+  const sessionText = sessions.length
+    ? `${sessions[0][1]} in ${sessions[0][4]} during ${sessions[0][7]}`
+    : `the available case records for ${alertId(item)}`;
+  const knownTimes = new Set([
+    ...txns.map(([time]) => time),
+    ...profiles.map(([time]) => time),
+    ...sessions.map(([time]) => time)
+  ].filter(Boolean));
+  const transactionFactMatches = (fragment) => txns.some(([, type, amount]) =>
+    amount && amount !== "-" && fragment.includes(amount) && fragment.includes(`by ${type}`)
+  );
+  const timeFactMatches = (fragment) => Array.from(knownTimes).some((time) =>
+    time && fragment.includes(`on ${time}`)
+  );
+  const sessionFactMatches = (fragment) => sessions.some(([, ip, , , region, , , action]) =>
+    ip && region && action && fragment.includes(`${ip} in ${region} during ${action}`)
+  );
+  const matchesCaseFact = (fragment) =>
+    transactionFactMatches(fragment) || timeFactMatches(fragment) || sessionFactMatches(fragment);
+  const inflatedAmount = (seedAmount, offset = 317) => {
+    const number = String(seedAmount || "").match(/\$([\d,]+)/);
+    const base = number ? Number(number[1].replace(/,/g, "")) : 300;
+    let inflated = base + offset;
+    const existingAmounts = new Set(txns.map(([, , amount]) => amount).filter(Boolean));
+    while (existingAmounts.has(`$${inflated.toLocaleString("en-US")}`)) inflated += 317;
+    return `$${inflated.toLocaleString("en-US")}`;
+  };
+  const alteredWhen = () => {
+    const fallbacks = ["07/04/2026 03:17 AM", "06/30/2026 04:43 PM", "the day after the first reviewed event"];
+    return fallbacks.find((time) => !knownTimes.has(time)) || "a later unrecorded review date";
+  };
+  const alteredSessionText = () => {
+    const base = sessions[0];
+    if (!base) return `203.0.113.250 in Wyoming during ${firstTxn[1].toLowerCase()} review`;
+    const regions = ["Wyoming", "Oregon", "Maine", "Idaho", "New Mexico"];
+    const region = regions.find((candidate) => !sessions.some(([, ip, , , rowRegion, , , action]) =>
+      ip === base[1] && rowRegion === candidate && action === `${firstTxn[1].toLowerCase()} review`
+    )) || "Wyoming";
+    return `${base[1]} in ${region} during ${firstTxn[1].toLowerCase()} review`;
+  };
+  const ensureFalse = (candidate, fallback) => matchesCaseFact(candidate) ? fallback() : candidate;
+  const wrongAmount = inflatedAmount(firstTxn[2]);
+  const wrongWhen = alteredWhen();
+  const wrongSessionText = alteredSessionText();
   const correct = [
     `Who: ${item.title} involves the customer and ${suspect}`,
     `What: The reviewed activity includes ${firstTxn[2]} by ${firstTxn[1]}.`,
     `When: Key activity began on ${firstTxn[0]}.`,
-    `Where: IP/session and account records show the activity location in the case file.`,
+    `Where: IP/session records show ${sessionText}.`,
     `How: ${chain.summary}`
   ];
   const distractors = [
-    "Wrong fact: The customer had no transaction activity.",
-    "Wrong conclusion: IP location alone proves fraud.",
-    "Wrong threshold: Every confirmed fraud case requires a SAR regardless of amount.",
-    "Wrong timeline: The suspicious activity happened before the account existed."
+    `Who: ${item.title} involves the customer and ${suspect} with no additional threshold or disposition concern.`,
+    ensureFalse(
+      `What: The reviewed activity includes ${wrongAmount} by ${firstTxn[1]}.`,
+      () => `What: The reviewed activity includes ${inflatedAmount(firstTxn[2], 634)} by ${firstTxn[1]}.`
+    ),
+    ensureFalse(
+      `When: Key activity began on ${wrongWhen}.`,
+      () => `When: Key activity began on a later unrecorded review date.`
+    ),
+    ensureFalse(
+      `Where: IP/session records show ${wrongSessionText}.`,
+      () => `Where: IP/session records show 203.0.113.250 in Wyoming during ${firstTxn[1].toLowerCase()} review.`
+    ),
+    `How: ${chain.pieces[0]} is present, but the file supports closing because the activity is fully customer-confirmed.`
   ];
-  return { correct, all: Array.from(new Set([...correct, ...Array.from(state.flaggedEvidence || []), ...distractors])) };
+  return { correct, all: Array.from(new Set([...correct, ...distractors])) };
 }
 
 function narrativeBuilderScore(item) {
   const { correct } = narrativeFragments(item);
   const selected = Array.from(state.narrativeSelections);
   const allCorrect = correct.every((part) => state.narrativeSelections.has(part));
-  const noWrong = selected.every((part) => correct.includes(part));
+  const noWrong = selected.every((part) => correct.includes(part) || state.flaggedEvidence.has(part));
   if (allCorrect && noWrong) return ["Narrative", 100, "Complete narrative: who, what, when, where, and how are all supported by the file."];
   const correctCount = selected.filter((part) => correct.includes(part)).length;
   return ["Narrative", Math.round((correctCount / correct.length) * 100), `Selected ${correctCount} of ${correct.length} required narrative pieces. Remove unsupported fragments and include all five elements.`];
@@ -2418,13 +2728,27 @@ function render() {
   }
 }
 
-function svgBoard() {
+function svgInvestigator() {
   return `
-    <svg class="case-board" viewBox="0 0 200 200" aria-hidden="true">
-      <rect x="28" y="24" width="132" height="154" rx="8" fill="none" stroke="white" stroke-width="4"/>
-      <path d="M58 58h74M58 84h92M58 110h68M58 136h82" stroke="white" stroke-width="5" stroke-linecap="round"/>
-      <circle cx="150" cy="54" r="28" fill="none" stroke="#ef4444" stroke-width="8"/>
-      <path d="M134 54l10 10 22-24" fill="none" stroke="#f59e0b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <svg class="investigator-graphic" viewBox="0 0 180 180" aria-hidden="true">
+      <defs>
+        <linearGradient id="caseGradient" x1="32" y1="18" x2="150" y2="164" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#f6f0e7" stop-opacity="0.92"/>
+          <stop offset="1" stop-color="#aeb8c8" stop-opacity="0.62"/>
+        </linearGradient>
+        <linearGradient id="lensGlow" x1="47" y1="54" x2="104" y2="111" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#f8fafc" stop-opacity="0.84"/>
+          <stop offset="1" stop-color="#38bdf8" stop-opacity="0.22"/>
+        </linearGradient>
+      </defs>
+      <rect x="44" y="20" width="88" height="126" rx="8" fill="url(#caseGradient)" stroke="#f8fafc" stroke-opacity="0.5" stroke-width="3"/>
+      <path d="M62 50h52M62 70h42M62 90h54M62 110h36" stroke="#101827" stroke-opacity="0.78" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="67" cy="78" r="34" fill="url(#lensGlow)" stroke="#f59e0b" stroke-width="7"/>
+      <path d="M91 103l34 34" stroke="#f59e0b" stroke-width="10" stroke-linecap="round"/>
+      <path d="M45 77a22 22 0 0 1 43 0" fill="none" stroke="#ffffff" stroke-width="4" stroke-opacity="0.55"/>
+      <path d="M130 36l8 20 21 2-16 13 5 21-18-11-18 11 5-21-16-13 21-2 8-20z" fill="#ef4444"/>
+      <path d="M130 49v22" stroke="#fff7ed" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="130" cy="82" r="3.5" fill="#fff7ed"/>
     </svg>
   `;
 }
@@ -2435,17 +2759,17 @@ function homeScreen() {
   const unlocked = DIFFICULTIES.filter(difficultyUnlocked).length;
   return `
     <section class="hero">
-      ${svgBoard()}
-      <p class="eyebrow">Review the clues. Make the call.</p>
-      <h2>Fraud Case Files</h2>
-      <p>Step into the role of a fraud investigator. Review the alert, line up the evidence, and make the call: fraud, no fraud found, or something worse.</p>
+      ${svgInvestigator()}
+      <p class="eyebrow">A Fraud Investigation Game</p>
+      <h2>Red Flag</h2>
+      <p>Review the clues. Make the call. Work each alert like a real fraud investigator: compare the evidence, spot the pattern, and decide what happened.</p>
       <div class="mode-toggle" aria-label="Game mode">
         <button class="${state.mode === "Training" ? "selected" : ""}" data-mode="Training">Training</button>
         <button class="${state.mode === "Challenge" ? "selected" : ""}" data-mode="Challenge">Challenge</button>
       </div>
       <div class="button-row">
-        <button class="primary-button" data-action="start">Start Playing</button>
         <button class="secondary-button" data-nav-target="how">How to Play</button>
+        <button class="primary-button" data-action="start">Start Playing</button>
       </div>
     </section>
 
@@ -2463,7 +2787,7 @@ function homeScreen() {
     </article>
     <article class="info-card">
       <h3>Possible calls</h3>
-      <p>Account takeover, first-party fraud, third-party fraud, elder or vulnerable adult exploitation, real identity theft, synthetic identity fraud, fraud ring activity, or normal customer behavior.</p>
+      <p>Account takeover, first-party fraud, third-party fraud, elder or vulnerable adult exploitation, real identity theft, synthetic identity fraud, or normal customer behavior.</p>
     </article>
     <article class="info-card">
       <h3>Your case loop</h3>
@@ -2640,7 +2964,7 @@ function playScreen() {
 
       <div class="file-section notepad-section">
         <h3>Flagged Evidence</h3>
-        <p class="file-help">Tap Flag on anything you would cite in your decision. Flagged items automatically appear in Evidence Support and narrative practice.</p>
+        <p class="file-help">Tap Flag on anything you would cite in your decision. Flagged items are preselected in Evidence Support and shown as narrative reference.</p>
         <div class="my-notes">${Array.from(state.flaggedEvidence).length ? Array.from(state.flaggedEvidence).map((item) => `<div>${escapeHtml(item)}</div>`).join("") : "<p>No flagged evidence yet.</p>"}</div>
         <details class="optional-notepad">
           <summary>Optional typed notes</summary>
@@ -2761,12 +3085,12 @@ function answerScreen() {
           </div>
         ` : ""}
         ${state.narrativeProMode && item.difficulty === "Expert" ? `
-          <textarea class="notepad" data-narrative placeholder="Optional Pro mode: write a SAR narrative here.">${escapeHtml(state.caseNotes)}</textarea>
+          <textarea class="notepad" data-narrative placeholder="Optional Pro mode: write a SAR narrative here.">${escapeHtml(state.narrativeDraft)}</textarea>
         ` : `
           <div class="choices compact">
             ${fragments.all.map((fragment) => `<button class="choice-button ${state.narrativeSelections.has(fragment) ? "selected" : ""}" data-narrative-fragment="${escapeHtml(fragment)}"><span>${fragment}</span><span>${state.narrativeSelections.has(fragment) ? "Selected" : "+"}</span></button>`).join("")}
           </div>
-          <div class="my-notes"><strong>Flagged evidence available:</strong>${Array.from(state.flaggedEvidence).length ? Array.from(state.flaggedEvidence).map((flag) => `<div>${escapeHtml(flag)}</div>`).join("") : "<p>No flagged evidence yet.</p>"}</div>
+          <div class="my-notes"><strong>Flagged evidence reference:</strong>${Array.from(state.flaggedEvidence).length ? Array.from(state.flaggedEvidence).map((flag) => `<div>${escapeHtml(flag)}</div>`).join("") : "<p>No flagged evidence yet.</p>"}</div>
         `}
         <button class="secondary-button" data-action="check-narrative">Check Narrative</button>
         <p class="narrative-feedback">${narrativeCheck || "Select the narrative pieces that cover who, what, when, where, and how."}</p>
@@ -2828,6 +3152,7 @@ function startCase(id) {
   state.selectedTypologies = new Set();
   state.selectedSarDecision = null;
   state.caseNotes = loadCaseNotes(id);
+  state.narrativeDraft = loadNarrativeDraft(id);
   state.narrativeFeedback = "";
   state.narrativeSelections = new Set();
   state.narrativeProMode = false;
@@ -2946,8 +3271,8 @@ function bindScreenEvents() {
   });
   document.querySelectorAll("[data-narrative]").forEach((input) => {
     input.addEventListener("input", () => {
-      state.caseNotes = input.value;
-      saveCaseNotes();
+      state.narrativeDraft = input.value;
+      saveNarrativeDraft();
     });
   });
   document.querySelectorAll("[data-narrative-fragment]").forEach((button) => {
@@ -3010,11 +3335,7 @@ function bindScreenEvents() {
       }
       if (action === "next-case") nextCase();
       if (action === "reset") {
-        if (confirm("Reset all saved progress?")) {
-          state.progress = { cases: {}, badges: [] };
-          saveProgress();
-          render();
-        }
+        resetGameProgress();
       }
     });
   });
@@ -3025,9 +3346,31 @@ document.querySelectorAll("[data-nav]").forEach((button) => {
 });
 document.getElementById("backButton").addEventListener("click", goBack);
 document.getElementById("progressButton").addEventListener("click", () => navigate("progress"));
+document.getElementById("resetMenuButton").addEventListener("click", (event) => {
+  event.stopPropagation();
+  const menu = document.getElementById("resetMenu");
+  const isOpen = menu.classList.toggle("open");
+  document.getElementById("resetMenuButton").setAttribute("aria-expanded", String(isOpen));
+});
+document.querySelectorAll("[data-reset-option]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.getElementById("resetMenu").classList.remove("open");
+    document.getElementById("resetMenuButton").setAttribute("aria-expanded", "false");
+    if (button.dataset.resetOption === "case") restartCurrentCase();
+    if (button.dataset.resetOption === "game") resetGameProgress();
+  });
+});
+document.addEventListener("click", (event) => {
+  const menu = document.getElementById("resetMenu");
+  if (!menu.contains(event.target)) {
+    menu.classList.remove("open");
+    document.getElementById("resetMenuButton").setAttribute("aria-expanded", "false");
+  }
+});
 
 render();
 
 </script>
 </body>
 </html>
+
