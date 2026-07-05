@@ -1937,41 +1937,47 @@ const PRIOR_CASE_HISTORY = {
 const TRANSACTION_ACTIVITY = {
   b1: [
     ["07/02/2026 01:38 AM", "Internal Transfer", "$480", "Funds moved from savings to checking"],
-    ["07/02/2026 01:42 AM", "Zelle", "$480", "Outgoing transfer from checking to new recipient"]
+    ["07/02/2026 01:42 AM", "Zelle", "$480", "Zelle to Marcus D. - new recipient, from checking"]
   ],
   b2: [
     ["02:14 PM", "Store Purchase", "$220", "Home goods purchase from known device"]
   ],
   b3: [
-    ["09:03 AM", "Cash Advance", "$190", "Advance requested minutes after signup"],
-    ["09:06 AM", "Account Movement", "$190", "Funds routed to newly linked prepaid account"]
+    ["07/02/2026 08:55 AM", "Signup", "-", "Thin identity profile created with new email, phone, and prepaid bank"],
+    ["07/02/2026 09:03 AM", "Cash Advance", "$190", "Advance requested minutes after signup"],
+    ["07/02/2026 09:06 AM", "Account Movement", "$190", "Funds routed to newly linked prepaid account"]
   ],
   b4: [
-    ["10:12 AM", "Store Purchase", "$310", "Electronics marketplace purchase after new account approval"]
+    ["07/02/2026 09:58 AM", "Application Start", "-", "Application started using victim identity"],
+    ["07/02/2026 10:06 AM", "Identity Entry", "-", "Identity data, new email, and VoIP phone entered"],
+    ["07/02/2026 10:10 AM", "Account Approval", "-", "Account approved"],
+    ["07/02/2026 10:12 AM", "Store Purchase", "$310", "Electronics marketplace purchase minutes after approval"]
   ],
   b5: [
     ["05:18 PM", "Store Purchase", "$42", "Grocery purchase from known device after phone update"]
   ],
   i1: [
-    ["06:18 PM", "Store Purchase", "$760", "Luxury resale purchase shipped to verified address"],
-    ["2 days later", "Dispute", "$760", "Customer claims unauthorized purchase after delivery"]
+    ["07/01/2026 06:18 PM", "Store Purchase", "$760", "Luxury resale purchase shipped to verified address"],
+    ["07/02/2026 04:32 PM", "Delivery", "-", "Carrier delivery scan posted; signature/photo proof pending"],
+    ["07/03/2026 09:09 AM", "Dispute", "$760", "Customer claims unauthorized purchase after delivery"]
   ],
   i2: [
     ["01:05 PM", "Store Purchase", "$96", "Theme park purchase while traveling"],
     ["06:44 PM", "Store Purchase", "$141", "Restaurant purchase from known device"],
-    ["09:10 PM", "PayPal", "$68", "Rideshare-related payment"]
+    ["09:10 PM", "PayPal", "$68", "PayPal to Coastal Rides - rideshare-related payment"]
   ],
   i3: [
-    ["07/02/2026 10:02 AM", "Zelle", "$45", "Sender 1 to shared recipient"],
-    ["07/02/2026 10:18 AM", "Zelle", "$80", "Sender 2 to same recipient"],
-    ["07/02/2026 10:29 AM", "Zelle", "$185", "Sender 3 to same recipient"],
+    ["07/02/2026 10:02 AM", "Zelle", "$45", "Zelle to Darius M. - Sender 1 marketplace deposit"],
+    ["07/02/2026 10:18 AM", "Zelle", "$80", "Zelle to Darius M. - Sender 2 marketplace deposit"],
+    ["07/02/2026 10:29 AM", "Zelle", "$185", "Zelle to Darius M. - Sender 3 marketplace deposit"],
     ["07/02/2026 10:44 AM", "Aggregation", "$6,125", "42 linked transfers to Darius M. over 14 days"],
     ["07/02/2026 10:52 AM", "Immediate Movement", "$6,125", "Recipient withdraws combined funds"]
   ],
   i5: [
     ["06/30/2026 09:11 AM", "Mobile Deposit", "$3,800", "Loan check deposited and provisional funds made available"],
     ["07/01/2026 12:28 PM", "Store Purchase", "$220", "Customer spends part of provisional funds"],
-    ["07/02/2026 10:16 AM", "Zelle", "$1,450", "Transfer to new recipient for alleged loan processing fees"],
+    ["07/02/2026 09:42 AM", "Message", "-", "Scammer instructs customer to send loan processing fees"],
+    ["07/02/2026 10:16 AM", "Zelle", "$1,450", "Zelle to Riley T. for alleged loan processing fees"],
     ["07/03/2026 08:42 AM", "Returned Item", "$3,800", "Deposited check returned unpaid"]
   ],
   i6: [
@@ -1983,19 +1989,27 @@ const TRANSACTION_ACTIVITY = {
   a7: [
     ["07/02/2026 09:08 AM", "Email", "$300", "Customer receives fake charge notice with callback number"],
     ["07/02/2026 09:31 AM", "Account Access", "-", "Customer allows caller to view or control online banking session"],
-    ["07/02/2026 09:46 AM", "Wire Setup", "$2,700", "New recipient added for alleged refund correction"],
-    ["07/02/2026 09:50 AM", "Wire", "$2,700", "Customer wires funds under urgent over-refund pressure"]
+    ["07/02/2026 09:46 AM", "Wire Setup", "$2,700", "Wire recipient M. Vargas added for alleged refund correction"],
+    ["07/02/2026 09:50 AM", "Wire", "$2,700", "Wire to M. Vargas under urgent over-refund pressure"]
   ],
   a1: [
     ["06/03/2026 12:14 PM", "Store Purchase", "$42", "Small purchase paid on time"],
+    ["06/22/2026 09:30 AM", "Payment", "$42", "Small balance paid on time to build history"],
+    ["07/01/2026 04:52 PM", "Bank Change", "-", "New payout bank added immediately before cash-out"],
     ["07/02/2026 09:14 AM", "Cash Advance", "$600", "Max advance after limit increase"],
     ["07/02/2026 09:21 AM", "Immediate Movement", "$600", "Funds routed to newly added bank"]
   ],
   a2: [
-    ["09:07 PM", "Zelle", "$350", "Transfer to new recipient from known state"]
+    ["07/02/2026 07:52 PM", "Carrier Event", "-", "Carrier SIM change completed before account activity"],
+    ["07/02/2026 08:22 PM", "Profile Change", "-", "Phone number changed on account after SIM event"],
+    ["07/02/2026 08:49 PM", "Recipient Added", "-", "New recipient Lena P. added"],
+    ["07/02/2026 09:07 PM", "Zelle", "$350", "Zelle to Lena P. - new recipient, from checking"]
   ],
   a4: [
-    ["07/02/2026 03:40 PM", "Store Purchase", "$12,400", "Mobile phone reseller purchases to alternate address"]
+    ["07/02/2026 10:04 AM", "Application Start", "-", "Application started using victim identity"],
+    ["07/02/2026 10:06 AM", "Identity Entry", "-", "Real SSN entered with new email, new phone, and alternate shipping address"],
+    ["07/02/2026 10:12 AM", "Account Approval", "-", "Account approved"],
+    ["07/02/2026 03:40 PM", "Store Purchase", "$12,400", "Mobile phone reseller purchase to alternate address"]
   ],
   a3: [
     ["06/26/2026 05:12 PM", "Store Purchase", "$58", "Grocery purchase in usual neighborhood"],
@@ -2007,7 +2021,10 @@ const TRANSACTION_ACTIVITY = {
   ],
   e1: [
     ["05/14/2026 02:22 PM", "Store Purchase", "$390", "Electronics order"],
+    ["05/16/2026 01:10 PM", "Delivery", "-", "Delivery scan posted for electronics order"],
     ["05/26/2026 09:18 AM", "Return", "$390", "Damage claim and refund request"],
+    ["06/21/2026 02:44 PM", "Store Purchase", "$120", "Related merchant order"],
+    ["06/24/2026 03:21 PM", "Delivery", "-", "Delivery scan posted for related merchant order"],
     ["06/28/2026 04:06 PM", "Dispute", "$120", "Another refund/credit claim"]
   ],
   e2: [
@@ -2016,24 +2033,29 @@ const TRANSACTION_ACTIVITY = {
     ["07/02/2026 03:15 PM", "Preliminary Aggregation", "~$7,850", "Preliminary estimate across 31 possible linked buyer orders; full linked-account aggregation pending"]
   ],
   e3: [
-    ["04:52 PM", "Wire", "$1,200", "Outgoing transfer to new recipient"]
+    ["07/02/2026 04:52 PM", "Wire", "$1,200", "Wire to Oliver K. - new recipient, from checking"]
   ],
   i4: [
-    ["06/29/2026 09:14 AM", "PayPal", "$150", "Payment to online romantic partner"],
-    ["07/01/2026 01:32 PM", "Zelle", "$225", "Second payment after hardship story"],
-    ["07/03/2026 08:48 AM", "Wire", "$400", "Travel-document request"]
+    ["06/18/2026 09:14 AM", "PayPal", "$75", "PayPal to Elena M. - first small assistance request"],
+    ["06/24/2026 07:20 PM", "Message", "-", "Online contact tells customer not to discuss payments with family"],
+    ["06/29/2026 09:14 AM", "PayPal", "$150", "PayPal to Elena M. - medical bill story"],
+    ["07/01/2026 01:32 PM", "Zelle", "$225", "Zelle to Elena M. - urgent hardship story"],
+    ["07/03/2026 08:48 AM", "Wire", "$400", "Wire to Elena M. - travel-document request"]
   ],
   a5: [
-    ["03:38 PM", "Zelle", "$880", "Transfer to recipient labeled Safe Holding"]
+    ["07/02/2026 03:20 PM", "Text Link", "-", "Customer clicked shortened fraud-department link"],
+    ["07/02/2026 03:34 PM", "Recipient Added", "-", "Devon R. added as recipient labeled Safe Holding"],
+    ["07/02/2026 03:38 PM", "Zelle", "$880", "Zelle to Devon R., recipient labeled Safe Holding"]
   ],
   e4: [
-    ["07/02/2026 11:26 AM", "Wire", "$2,400", "Outgoing transfer to new recipient"],
+    ["07/02/2026 11:26 AM", "Wire", "$2,400", "Wire to Thomas B. - new recipient, from checking"],
     ["07/02/2026 11:34 AM", "Immediate Cash Withdrawal", "$2,400", "Recipient cashes out same day"]
   ],
   e5: [
-    ["03/04/2026 09:10 AM", "ACH", "$1,200", "Transfer to nephew after helper access added"],
+    ["03/04/2026 09:10 AM", "ACH", "$1,200", "ACH to Daniel R. (nephew) after helper access added"],
     ["04/09/2026 11:42 AM", "ATM Withdrawal", "$2,500", "Debit card withdrawal near nephew's address"],
-    ["05/22/2026 02:16 PM", "Zelle", "$4,800", "Transfer to nephew"],
+    ["05/01/2026 08:58 AM", "Limit Increase", "-", "Daily transfer limit increased before larger payments"],
+    ["05/22/2026 02:16 PM", "Zelle", "$4,800", "Zelle to Daniel R. (nephew)"],
     ["06/18/2026 10:05 AM", "ATM Withdrawal", "$3,750", "Cash withdrawal by helper card"],
     ["07/01/2026 01:28 PM", "Aggregation", "$18,750", "Total unusual outflow to nephew/helper pattern"]
   ],
@@ -2056,12 +2078,39 @@ const PROFILE_EVENTS = {
     ["07/02/2026 10:19 AM", "Phone number changed after authenticated support call"]
   ],
   a2: [
+    ["07/02/2026 07:52 PM", "Carrier SIM change confirmed"],
     ["07/02/2026 08:22 PM", "Phone number changed after SIM event"],
-    ["07/02/2026 08:49 PM", "New recipient added"]
+    ["07/02/2026 08:49 PM", "New recipient Lena P. added"]
+  ],
+  b3: [
+    ["07/02/2026 08:55 AM", "Thin identity signup: new email, new phone, recently opened prepaid bank"],
+    ["07/02/2026 09:01 AM", "Cash advance eligibility checked minutes after account creation"]
+  ],
+  b4: [
+    ["07/02/2026 09:58 AM", "Application started using victim identity"],
+    ["07/02/2026 10:06 AM", "Identity data entered with throwaway email and VoIP phone"],
+    ["07/02/2026 10:10 AM", "Account approved"],
+    ["07/05/2026 09:22 AM", "Identity owner report received from different location"]
+  ],
+  i1: [
+    ["07/01/2026 06:18 PM", "Purchase made from known device"],
+    ["07/02/2026 04:32 PM", "Delivery scan posted; signature/photo proof pending"],
+    ["07/03/2026 09:09 AM", "Dispute opened after delivery scan"]
+  ],
+  i4: [
+    ["06/24/2026 07:20 PM", "Customer note: online contact asked customer not to discuss payments with family"],
+    ["07/01/2026 01:18 PM", "New Zelle recipient Elena M. added"]
   ],
   a4: [
     ["07/02/2026 10:04 AM", "New application submitted using real SSN"],
-    ["07/02/2026 10:06 AM", "New email, new phone, and alternate shipping address entered"]
+    ["07/02/2026 10:06 AM", "New email, new phone, and alternate shipping address entered"],
+    ["07/02/2026 10:12 AM", "Account approved"],
+    ["07/05/2026 11:07 AM", "Victim report received after wallet-theft review"]
+  ],
+  a1: [
+    ["06/03/2026 12:02 PM", "Small first purchase on new account"],
+    ["06/22/2026 09:30 AM", "Small balance paid on time"],
+    ["07/01/2026 04:52 PM", "New payout bank added before max cash advance"]
   ],
   a6: [
     ["06/30/2026 04:18 PM", "Customer uploaded closing disclosure"],
@@ -2069,12 +2118,18 @@ const PROFILE_EVENTS = {
   ],
   a5: [
     ["07/02/2026 03:20 PM", "Customer clicked shortened URL from text message"],
-    ["07/02/2026 03:34 PM", "New recipient labeled Safe Holding added"]
+    ["07/02/2026 03:34 PM", "Devon R. added as recipient labeled Safe Holding"]
   ],
   e5: [
     ["03/01/2026 03:11 PM", "Nephew added as helper for online banking"],
-    ["03/04/2026 09:02 AM", "Daily transfer limit increased"],
+    ["03/04/2026 09:02 AM", "Small early transfer pattern begins"],
+    ["05/01/2026 08:58 AM", "Daily transfer limit increased before larger payments"],
     ["07/01/2026 01:28 PM", "Account reviewed for unusual caregiver activity"]
+  ],
+  a7: [
+    ["07/02/2026 09:08 AM", "Customer receives unexpected charge email with callback number"],
+    ["07/02/2026 09:31 AM", "Remote-access session begins during call"],
+    ["07/02/2026 09:46 AM", "M. Vargas added as wire recipient"]
   ]
 };
 const IP_SESSION_LOGS = {
@@ -2087,7 +2142,9 @@ const IP_SESSION_LOGS = {
     ["07/02/2026 01:24 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "profile update"],
     ["07/02/2026 01:31 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "new recipient added"],
     ["07/02/2026 01:38 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "internal transfer savings to checking"],
-    ["07/02/2026 01:42 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "Zelle transfer to Marcus D."]
+    ["07/02/2026 01:42 AM", "185.220.101.44", "US", "United States", "Nevada", "36.1699", "-115.1398", "Zelle transfer to Marcus D."],
+    ["07/02/2026 08:15 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "failed login - password not recognized, customer calls bank"],
+    ["07/02/2026 09:02 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "account access restored after bank call"]
   ],
   b2: [
     ["07/02/2026 01:58 PM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
@@ -2095,19 +2152,25 @@ const IP_SESSION_LOGS = {
   ],
   b3: [
     ["07/02/2026 08:55 AM", "198.51.100.88", "US", "United States", "Texas", "32.7767", "-96.7970", "signup"],
+    ["07/02/2026 09:01 AM", "198.51.100.88", "US", "United States", "Texas", "32.7767", "-96.7970", "cash advance eligibility checked"],
     ["07/02/2026 09:03 AM", "198.51.100.88", "US", "United States", "Texas", "32.7767", "-96.7970", "cash advance"]
   ],
   b4: [
     ["07/02/2026 09:58 AM", "203.0.113.44", "US", "United States", "Ohio", "39.9612", "-82.9988", "application start"],
-    ["07/02/2026 10:06 AM", "203.0.113.44", "US", "United States", "Ohio", "39.9612", "-82.9988", "profile entered"],
-    ["07/02/2026 10:12 AM", "203.0.113.44", "US", "United States", "Ohio", "39.9612", "-82.9988", "transaction"]
+    ["07/02/2026 10:06 AM", "203.0.113.44", "US", "United States", "Ohio", "39.9612", "-82.9988", "identity data entered"],
+    ["07/02/2026 10:10 AM", "203.0.113.44", "US", "United States", "Ohio", "39.9612", "-82.9988", "account approved"],
+    ["07/02/2026 10:12 AM", "203.0.113.44", "US", "United States", "Ohio", "39.9612", "-82.9988", "purchase after approval"],
+    ["07/05/2026 09:22 AM", "198.51.100.54", "US", "United States", "Michigan", "42.3314", "-83.0458", "identity owner report from different location"]
   ],
   a2: [
     ["07/01/2026 08:10 AM", "72.14.188.21", "US", "United States", "Georgia", "33.9526", "-84.5499", "login"],
     ["07/02/2026 07:55 PM", "72.14.188.21", "US", "United States", "Georgia", "33.9526", "-84.5499", "login"],
-    ["07/02/2026 08:21 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "login"],
-    ["07/02/2026 08:22 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "profile change"],
-    ["07/02/2026 09:07 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "transaction"]
+    ["07/02/2026 07:52 PM", "72.14.188.21", "US", "United States", "Georgia", "33.9526", "-84.5499", "carrier SIM change event"],
+    ["07/02/2026 08:21 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "new device login - password passed, device trust failed"],
+    ["07/02/2026 08:22 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "phone number changed on account"],
+    ["07/02/2026 08:49 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "new recipient Lena P. added"],
+    ["07/02/2026 09:07 PM", "198.51.100.23", "US", "United States", "Alabama", "33.5186", "-86.8104", "Zelle transfer to Lena P."],
+    ["07/02/2026 10:18 PM", "72.14.188.21", "US", "United States", "Georgia", "33.9526", "-84.5499", "failed login - phone service disrupted, customer calls bank"]
   ],
   b5: [
     ["07/01/2026 08:15 PM", "172.58.42.77", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
@@ -2123,7 +2186,8 @@ const IP_SESSION_LOGS = {
   i1: [
     ["07/01/2026 06:02 PM", "172.58.30.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "login"],
     ["07/01/2026 06:18 PM", "172.58.30.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "purchase"],
-    ["07/03/2026 09:09 AM", "172.58.30.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "dispute"]
+    ["07/02/2026 04:32 PM", "172.58.30.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "delivery scan posted"],
+    ["07/03/2026 09:09 AM", "172.58.30.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "dispute after delivery"]
   ],
   i3: [
     ["07/02/2026 10:01 AM", "192.0.2.44", "US", "United States", "North Carolina", "35.2271", "-80.8431", "sender login"],
@@ -2133,7 +2197,8 @@ const IP_SESSION_LOGS = {
   i5: [
     ["06/30/2026 09:10 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal login"],
     ["06/30/2026 09:11 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "mobile deposit"],
-    ["07/02/2026 10:16 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "transfer to new recipient"]
+    ["07/02/2026 09:42 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "message instructs loan fee payment"],
+    ["07/02/2026 10:16 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "Zelle to Riley T."]
   ],
   i6: [
     ["07/02/2026 08:05 AM", "104.28.50.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal login"],
@@ -2142,11 +2207,14 @@ const IP_SESSION_LOGS = {
   ],
   a7: [
     ["07/02/2026 08:52 AM", "104.28.64.22", "US", "United States", "Georgia", "33.7490", "-84.3880", "normal login"],
+    ["07/02/2026 09:08 AM", "104.28.64.22", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer calls number from charge email"],
     ["07/02/2026 09:31 AM", "198.51.100.88", "US", "United States", "Nevada", "36.1699", "-115.1398", "remote-access session during call"],
+    ["07/02/2026 09:46 AM", "198.51.100.88", "US", "United States", "Nevada", "36.1699", "-115.1398", "wire recipient M. Vargas added"],
     ["07/02/2026 09:50 AM", "198.51.100.88", "US", "United States", "Nevada", "36.1699", "-115.1398", "wire setup"]
   ],
   a1: [
     ["06/03/2026 12:02 PM", "198.51.100.31", "US", "United States", "Arizona", "33.4484", "-112.0740", "purchase"],
+    ["06/22/2026 09:30 AM", "198.51.100.31", "US", "United States", "Arizona", "33.4484", "-112.0740", "small balance paid on time"],
     ["07/02/2026 09:10 AM", "198.51.100.31", "US", "United States", "Arizona", "33.4484", "-112.0740", "bank change"],
     ["07/02/2026 09:21 AM", "198.51.100.31", "US", "United States", "Arizona", "33.4484", "-112.0740", "cash-out"]
   ],
@@ -2157,8 +2225,10 @@ const IP_SESSION_LOGS = {
   ],
   a4: [
     ["07/02/2026 10:04 AM", "203.0.113.91", "US", "United States", "Florida", "27.9506", "-82.4572", "application submitted"],
-    ["07/02/2026 10:06 AM", "203.0.113.91", "US", "United States", "Florida", "27.9506", "-82.4572", "profile entered"],
-    ["07/02/2026 03:40 PM", "203.0.113.91", "US", "United States", "Florida", "27.9506", "-82.4572", "purchase"]
+    ["07/02/2026 10:06 AM", "203.0.113.91", "US", "United States", "Florida", "27.9506", "-82.4572", "identity data entered"],
+    ["07/02/2026 10:12 AM", "203.0.113.91", "US", "United States", "Florida", "27.9506", "-82.4572", "account approved"],
+    ["07/02/2026 03:40 PM", "203.0.113.91", "US", "United States", "Florida", "27.9506", "-82.4572", "purchase after approval"],
+    ["07/05/2026 11:07 AM", "198.51.100.87", "US", "United States", "Georgia", "33.7490", "-84.3880", "victim report from different location"]
   ],
   a6: [
     ["07/01/2026 06:20 PM", "24.178.77.31", "US", "United States", "Georgia", "33.9526", "-84.5499", "login"],
@@ -2168,7 +2238,7 @@ const IP_SESSION_LOGS = {
   a5: [
     ["07/02/2026 03:20 PM", "98.176.44.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "link opened"],
     ["07/02/2026 03:34 PM", "98.176.44.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "recipient added"],
-    ["07/02/2026 03:38 PM", "98.176.44.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "transaction"]
+    ["07/02/2026 03:38 PM", "98.176.44.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "Zelle to Devon R."]
   ],
   e1: [
     ["05/14/2026 02:22 PM", "198.51.100.55", "US", "United States", "Georgia", "33.7490", "-84.3880", "purchase"],
@@ -2185,6 +2255,8 @@ const IP_SESSION_LOGS = {
     ["07/02/2026 04:52 PM", "172.58.42.90", "US", "United States", "Georgia", "33.7490", "-84.3880", "wire"]
   ],
   i4: [
+    ["06/18/2026 09:14 AM", "104.28.88.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "PayPal to Elena M."],
+    ["06/24/2026 07:20 PM", "104.28.88.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "secrecy instruction noted"],
     ["06/29/2026 09:14 AM", "104.28.88.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "PayPal"],
     ["07/01/2026 01:32 PM", "104.28.88.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "Zelle"],
     ["07/03/2026 08:48 AM", "104.28.88.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "wire"]
@@ -2196,6 +2268,8 @@ const IP_SESSION_LOGS = {
   ],
   e5: [
     ["03/01/2026 03:11 PM", "104.28.41.31", "US", "United States", "Georgia", "33.7490", "-84.3880", "helper access added"],
+    ["03/04/2026 09:10 AM", "104.28.41.31", "US", "United States", "Georgia", "33.7490", "-84.3880", "ACH to Daniel R."],
+    ["05/01/2026 08:58 AM", "198.51.100.145", "US", "United States", "Georgia", "34.0232", "-84.3616", "daily transfer limit increased"],
     ["05/22/2026 02:16 PM", "198.51.100.145", "US", "United States", "Georgia", "34.0232", "-84.3616", "transfer to nephew"],
     ["07/01/2026 01:28 PM", "198.51.100.145", "US", "United States", "Georgia", "34.0232", "-84.3616", "aggregation review"]
   ],
@@ -2227,7 +2301,7 @@ const CUSTOMER_BASELINES = {
   a1: ["DOB on application: 03/30/1998 (age 28)", "Account tenure: 5 months", "Occupation/income: gig worker, about $38k/year stated", "Typical activity: small purchases paid on time before limit increase", "Normal geography: same device family across linked accounts"],
   a2: ["DOB: 10/08/1987 (age 38)", "Account tenure: 4 years", "Occupation/income: office manager, about $58k/year", "Typical activity: bill pay and known-recipient P2P under $200", "Normal geography: Georgia access before SIM/profile event"],
   a3: ["DOB: 08/21/1975 (age 50)", "Account tenure: 7 years", "Occupation/income: part-time bookkeeper, about $43k/year", "Typical activity: groceries and pharmacy purchases under $100", "Normal geography: usual neighborhood and known Android"],
-  a4: ["Victim DOB: 01/29/1992 (age 34)", "Account tenure: new account", "Occupation/income: victim profile does not match application", "Typical activity: no authorized prior activity", "Normal geography: application geography mismatches victim statement"],
+  a4: ["Victim DOB: 01/29/1992 (age 34)", "Account tenure: new account opened today", "Occupation/income: victim profile does not match application", "Typical activity: no authorized prior activity", "Normal geography: application geography mismatches victim statement"],
   a5: ["DOB: 11/02/1986 (age 39)", "Account tenure: 3 years", "Occupation/income: administrative assistant, about $52k/year", "Typical activity: rent, groceries, and small P2P to saved contacts", "Normal geography: South Carolina login with unusual safe-account instruction"],
   a6: ["DOB: 02/26/1979 (age 47)", "Account tenure: 8 years", "Occupation/income: project manager, about $92k/year", "Typical activity: monthly bills and card purchases usually under $600", "Normal geography: Georgia home network; documented home closing this week"],
   e1: ["DOB: 09/09/1983 (age 42)", "Account tenure: 2 years", "Occupation/income: online reseller, about $64k/year stated", "Typical activity: higher retail volume with increasing return and dispute claims", "Normal geography: recurring device and merchant network links"],
@@ -2383,6 +2457,7 @@ function p2pRecipient(item, type = "") {
     b1: "Marcus D.",
     i3: "Darius M.",
     i5: "Riley T.",
+    i2: "Coastal Rides",
     a2: "Lena P.",
     i4: "Elena M.",
     a5: "Devon R.",
@@ -2405,13 +2480,54 @@ function transactionIpFor(item) {
   return suspicious || sessions.find(([, ip]) => ip && ip !== "-") || ["", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "session"];
 }
 
+function customerSessionAnchor(item) {
+  const known = {
+    b1: ["104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    b4: ["198.51.100.54", "US", "United States", "Michigan", "42.3314", "-83.0458"],
+    i5: ["104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    i6: ["104.28.50.19", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    a7: ["104.28.64.22", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    a2: ["72.14.188.21", "US", "United States", "Georgia", "33.9526", "-84.5499"],
+    a4: ["198.51.100.87", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    e3: ["172.58.42.90", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    a5: ["98.176.44.19", "US", "United States", "South Carolina", "34.0007", "-81.0348"],
+    e4: ["172.58.44.10", "US", "United States", "Georgia", "33.7490", "-84.3880"],
+    e6: ["104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880"]
+  };
+  const row = known[item.id];
+  if (row) return ["", ...row, ""];
+  return null;
+}
+
+function clientReportRows(item) {
+  const rows = {
+    b1: [
+      ["07/02/2026 08:15 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "failed login - password not recognized, customer calls bank"],
+      ["07/02/2026 09:02 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "account access restored after bank call"]
+    ],
+    b4: [["07/05/2026 09:22 AM", "198.51.100.54", "US", "United States", "Michigan", "42.3314", "-83.0458", "identity owner report from different location"]],
+    i5: [["07/03/2026 08:55 AM", "104.28.72.14", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer login - sees returned check and calls bank"]],
+    i6: [["07/02/2026 01:18 PM", "104.28.50.19", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer login - views ATM withdrawals and calls bank"]],
+    a7: [["07/02/2026 10:06 AM", "104.28.64.22", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer login - reviews wire and calls bank"]],
+    a2: [["07/02/2026 10:18 PM", "72.14.188.21", "US", "United States", "Georgia", "33.9526", "-84.5499", "failed login - phone service disrupted, customer calls bank"]],
+    a4: [["07/05/2026 11:07 AM", "198.51.100.87", "US", "United States", "Georgia", "33.7490", "-84.3880", "victim report from different location"]],
+    e3: [["07/02/2026 05:08 PM", "172.58.42.90", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer login - reports urgent call transfer"]],
+    a5: [["07/02/2026 03:55 PM", "98.176.44.19", "US", "United States", "South Carolina", "34.0007", "-81.0348", "customer login - sees safe-account transfer and calls bank"]],
+    e4: [["07/02/2026 11:49 AM", "172.58.44.10", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer login - reviews wire and calls bank"]],
+    e6: [["07/02/2026 07:03 AM", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", "customer login - sees ACH debits and calls bank"]]
+  };
+  return rows[item.id] || [];
+}
+
 function transactionActivity(item) {
   const base = TRANSACTION_ACTIVITY[item.id] || Object.entries(item.transaction).map(([key, value]) => [key, "Detail", "-", value]);
   return base.map(([time, type, amount, detail]) => {
     const fullTime = fullDateTime(time);
     let displayType = type;
     let displayDetail = detail;
-    if (/^(Zelle|PayPal|P2P)$/i.test(type)) displayType = `${type} to ${p2pRecipient(item, type)}`;
+    if (/^Zelle$/i.test(type)) displayType = `Zelle payment to ${p2pRecipient(item, type)}`;
+    if (/^PayPal$/i.test(type)) displayType = `PayPal transfer to ${p2pRecipient(item, type)}`;
+    if (/^P2P$/i.test(type)) displayType = `P2P payment to ${p2pRecipient(item, type)}`;
     if (/^(Zelle|PayPal|P2P|ACH|Wire|Cash Advance|Internal Transfer)$/i.test(type) && !/checking|savings/i.test(displayDetail)) {
       displayDetail = `${displayDetail}; from checking`;
     }
@@ -2428,11 +2544,12 @@ function ipSessionLogs(item) {
     [fullDateTime(time), ip, cc, country, region, lat, lon, action]
   );
   const hasNormal = base.filter(([, , , , , , , action]) => /normal customer login/i.test(action || "")).length >= 2;
-  const anchor = base.find(([, ip]) => ip && ip !== "-") || ["", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", ""];
+  const anchor = customerSessionAnchor(item) || base.find(([, ip]) => ip && ip !== "-") || ["", "104.28.45.12", "US", "United States", "Georgia", "33.7490", "-84.3880", ""];
   const normalRows = hasNormal ? [] : [
     ["06/24/2026 08:14 AM", anchor[1], anchor[2], anchor[3], anchor[4], anchor[5], anchor[6], "normal customer login"],
     ["06/29/2026 06:37 PM", anchor[1], anchor[2], anchor[3], anchor[4], anchor[5], anchor[6], "normal customer login"]
   ];
+  const postLogin = ["07/03/2026 09:24 AM", anchor[1], anchor[2], anchor[3], anchor[4], anchor[5], anchor[6], "normal customer login after alert"];
   const txIp = transactionIpFor(item);
   const transactionRows = transactionActivity(item)
     .filter(([time, type]) => /^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}\s+[AP]M$/i.test(time) && !/Email|Returned Item|Aggregation/i.test(type))
@@ -2442,7 +2559,10 @@ function ipSessionLogs(item) {
     .filter(([time]) => /^\d{2}\/\d{2}\/\d{4}\s+\d{1,2}:\d{2}\s+[AP]M$/i.test(time))
     .filter(([time]) => !base.some(([sessionTime]) => sessionTime === time) && !transactionRows.some(([sessionTime]) => sessionTime === time))
     .map(([time, detail]) => [time, txIp[1], txIp[2], txIp[3], txIp[4], txIp[5], txIp[6], detail]);
-  return [...normalRows, ...base, ...profileRows, ...transactionRows];
+  const reportRows = clientReportRows(item).filter(([time, ip]) => !base.some(([sessionTime, sessionIp]) => sessionTime === time && sessionIp === ip));
+  const combined = [...normalRows, ...base, ...profileRows, ...transactionRows, ...reportRows];
+  if (!combined.some(([time, ip]) => time === postLogin[0] && ip === postLogin[1])) combined.push(postLogin);
+  return combined;
 }
 
 function expectedTypologies(item) {
@@ -2520,14 +2640,74 @@ function flagButton(label) {
   return `<button class="flag-button ${active ? "selected" : ""}" data-flag-evidence="${clean}" title="${active ? "Remove from My Notes" : "Flag for My Notes"}" aria-label="${active ? "Remove flagged evidence" : "Flag evidence"}">${active ? "Flagged" : "Flag"}</button>`;
 }
 
-function evidenceSupportBonus(item) {
-  const expected = item.redFlags;
+function evidenceAliases(item) {
+  const aliases = {};
+  const add = (flag, values) => {
+    aliases[flag] = Array.from(new Set([flag, ...(values || [])].filter(Boolean)));
+  };
+  add("OTP code shared with caller", ["one-time security code", "security code", "bank-imposter call"]);
+  add("New device", ["new device", "attacker login", "new device login"]);
+  add("New location", ["Nevada", "Alabama", "Ohio", "Florida", "different location", "new-location"]);
+  add("Password change", ["password changed", "password change", "password not recognized"]);
+  add("Password reset", ["password reset", "password changed", "password change"]);
+  add("New recipient", ["new recipient", "recipient added", "Marcus D.", "Lena P.", "Riley T.", "Devon R.", "Elena M.", "Oliver K.", "Thomas B.", "M. Vargas"]);
+  add("Savings-to-checking staging transfer", ["savings to checking", "Internal Transfer", "staging"]);
+  add("Phone change", ["phone number changed", "SIM event", "SIM change"]);
+  add("Verification failure", ["device trust failed", "failed login"]);
+  add("Real victim report", ["victim report", "identity owner report"]);
+  add("Contact mismatch", ["new email", "new phone", "VoIP", "throwaway email"]);
+  add("Fast purchase", ["purchase minutes after approval", "purchase after approval"]);
+  add("Shipping mismatch", ["alternate shipping address"]);
+  add("Check returned unpaid", ["Returned Item", "returned unpaid", "returned check"]);
+  add("Loan fee request", ["loan processing fees", "loan fee", "send loan processing fees"]);
+  add("Funds spent before check clears", ["provisional funds", "spends part"]);
+  add("Missing card", ["missing debit card", "wallet missing"]);
+  add("Rapid ATM withdrawals", ["ATM Withdrawal", "back-to-back", "cash limit"]);
+  add("Unusual ATM location", ["nearby ATM", "ATMs 19 miles"]);
+  add("Daily cash limit reached", ["Daily cash limit"]);
+  add("Remote/account access", ["remote-access session", "account access", "control online banking"]);
+  add("Over-refund pressure", ["over-refund", "refunded $3,000", "$2,700"]);
+  add("Urgent wire request", ["urgent", "Wire to M. Vargas"]);
+  add("Shortened text link", ["shortened URL", "text link", "link opened"]);
+  add("Safe-account instruction", ["safe account", "Safe Holding"]);
+  add("Escalating requests from online contact", ["Elena M.", "hardship story", "travel-document"]);
+  add("Repeated transfers", ["PayPal to Elena M.", "Zelle to Elena M.", "Wire to Elena M."]);
+  add("Urgent hardship story", ["hardship story", "medical bill", "travel-document"]);
+  add("Family member account access", ["helper access", "nephew", "Daniel R."]);
+  add("Gradual withdrawals", ["gradual", "month over month", "ATM Withdrawal", "ACH to Daniel R.", "Zelle to Daniel R."]);
+  add("Customer defends helper", ["customer defends helper"]);
+  add("Customer relies on helper", ["customer dependency", "helper"]);
+  add("Unauthorized ACH", ["unauthorized ACH", "ACH debits", "ACH transfers"]);
+  add("High dollar loss", ["$31,200", "high dollar"]);
+  item.redFlags.forEach((flag) => {
+    if (!aliases[flag]) add(flag, [flag]);
+  });
+  return aliases;
+}
+
+function evidenceMatchDetails(item) {
+  const aliases = evidenceAliases(item);
   const selected = Array.from(state.selectedEvidence);
-  if (!selected.length) return 0;
-  const matchesExpected = (choice) => expected.some((piece) => choice === piece || choice.includes(piece) || piece.includes(choice));
-  const relevant = selected.filter(matchesExpected).length;
-  const irrelevant = selected.filter((choice) => !matchesExpected(choice) && !state.flaggedEvidence.has(choice)).length;
-  if (relevant >= Math.min(3, expected.length) && irrelevant === 0) return 20;
+  const matched = [];
+  const unneeded = [];
+  selected.forEach((choice) => {
+    const hit = item.redFlags.find((flag) => (aliases[flag] || [flag]).some((alias) =>
+      choice.toLowerCase().includes(String(alias).toLowerCase()) || String(alias).toLowerCase().includes(choice.toLowerCase())
+    ));
+    if (hit) matched.push(hit);
+    else if (!state.flaggedEvidence.has(choice)) unneeded.push(choice);
+  });
+  const cited = Array.from(new Set(matched));
+  const missing = item.redFlags.filter((flag) => !cited.includes(flag));
+  return { cited, missing, unneeded };
+}
+
+function evidenceSupportBonus(item) {
+  const { cited, unneeded } = evidenceMatchDetails(item);
+  if (!state.selectedEvidence.size) return 0;
+  const relevant = cited.length;
+  const irrelevant = unneeded.length;
+  if (relevant >= Math.min(3, item.redFlags.length) && irrelevant === 0) return 20;
   if (relevant >= 2 && irrelevant <= 1) return 12;
   if (relevant >= 1) return 6;
   return 0;
@@ -2642,7 +2822,7 @@ function narrativeBuilderScore(item) {
 
 function regENoteApplies(item) {
   const [sourceType, reason] = ALERT_SOURCES[item.id] || [];
-  const electronic = transactionActivity(item).some(([, type]) => ["Zelle", "PayPal", "ACH", "Wire", "Cash Advance"].includes(type));
+  const electronic = transactionActivity(item).some(([, type]) => /Zelle|PayPal|P2P|ACH|Wire|Cash Advance/i.test(type));
   return sourceType === "Client-reported" && electronic && /unauthorized|did not recognize|reported|denies|victim/i.test(`${reason} ${item.notes}`);
 }
 
@@ -2708,10 +2888,12 @@ function caseTakeaway(item) {
 
 function evidenceSupportScore(item) {
   const score = evidenceSupportBonus(item);
-  if (score === 20) return ["Red flags", 20, "Identified the key red flags without unsupported extras."];
-  if (score === 12) return ["Red flags", 12, "Identified enough red flags, but missed part of the pattern or included one weaker item."];
-  if (score === 6) return ["Red flags", 6, "Identified some red flags, but the support was incomplete."];
-  return ["Red flags", 0, "No selected observations clearly supported the conclusion."];
+  const { cited, missing, unneeded } = evidenceMatchDetails(item);
+  const detail = `You cited: ${cited.length ? cited.join(", ") : "none"}. Missing: ${missing.length ? missing.join(", ") : "none"}. Unneeded: ${unneeded.length ? unneeded.join(", ") : "none"}.`;
+  if (score === 20) return ["Red flags", 20, `Identified the key red flags without unsupported extras. ${detail}`];
+  if (score === 12) return ["Red flags", 12, `Identified enough red flags, but missed part of the pattern or included one weaker item. ${detail}`];
+  if (score === 6) return ["Red flags", 6, `Identified some red flags, but the support was incomplete. ${detail}`];
+  return ["Red flags", 0, `No selected observations clearly supported the conclusion. ${detail}`];
 }
 
 function typologyScore(item) {
@@ -2734,6 +2916,22 @@ function scoreBreakdown(item, seconds) {
   rows.push(["Hint penalty", state.hintCount ? -10 * state.hintCount : 0, state.hintCount ? `-${10 * state.hintCount} points for hint use.` : "No hint penalty."]);
   if (state.mode === "Challenge") rows.push(["Speed bonus", seconds <= 60 ? 10 : 0, seconds <= 60 ? "Closed in 60 seconds or less." : "Closed after the speed bonus window."]);
   return rows;
+}
+
+function scoreReasonSummary(result, breakdown) {
+  const maxPoints = {
+    "Typology": 35,
+    "Red flags": 20,
+    "Disposition": 25,
+    "No-hint bonus": 10,
+    "Speed bonus": 10
+  };
+  const missed = breakdown
+    .filter(([label, points]) => maxPoints[label] !== undefined && points < maxPoints[label])
+    .map(([label, points, note]) => `${label}: ${points}/${maxPoints[label]}. ${note}`);
+  if ((result.score || 0) >= 100) return "You reached 100 because the typology, red flags, disposition, and bonus conditions all lined up.";
+  if (!missed.length) return "Your score was below 100 because one or more partial-credit areas did not reach the maximum.";
+  return `You lost points here: ${missed.join(" ")}`;
 }
 
 function reviewWasCorrect(item) {
@@ -2782,6 +2980,32 @@ function typologyFeedback(item, selectedPrimary) {
   if (!selected.length) return `Expected typology: ${expected.join(" + ")}.`;
   if (selectedPrimary === item.correct && overlap.length === expected.length) return `Good typology work. Primary: ${item.correct}. Also supported: ${expected.filter((choice) => choice !== item.correct).join(", ") || "none"}.`;
   return `You selected ${selected.join(", ")}. Best-supported typology: ${expected.join(" + ")}.`;
+}
+
+function thresholdMath(item) {
+  const lossText = POTENTIAL_LOSS[item.id] || "Unknown";
+  const suspectText = SUSPECT_INFO[item.id] || "";
+  const noSuspect = /^No suspect|No identifiable/i.test(suspectText);
+  const suspectIdentified = !noSuspect && !/not yet verified|under review/i.test(suspectText);
+  const amountMatch = String(lossText).match(/\$([\d,]+)/);
+  const amount = amountMatch ? Number(amountMatch[1].replace(/,/g, "")) : null;
+  const expected = EXPECTED_SAR_DECISIONS[item.id] || "";
+  let threshold = suspectIdentified ? 5000 : 25000;
+  let thresholdLabel = suspectIdentified ? "$5,000 identified-suspect threshold" : "$25,000 no-suspect threshold";
+  if (/insider/i.test(suspectText)) {
+    threshold = 0;
+    thresholdLabel = "any amount for insider abuse";
+  }
+  const met = amount !== null && amount >= threshold;
+  const suspectLine = suspectIdentified ? `yes (${suspectText})` : `no (${suspectText || "no identifiable suspect"})`;
+  let outcome = met ? "Threshold met." : "Threshold met: no.";
+  if (expected === "Fraud confirmed - no SAR required (below threshold)") outcome += " SAR not required; fraud still documented.";
+  if (expected === "File SAR") outcome += " File SAR.";
+  if (expected === "File SAR + escalate to law enforcement/APS") outcome += " File SAR and escalate.";
+  if (expected === "Request more information") outcome = "Threshold decision is pending because ownership, aggregation, or documentation is incomplete.";
+  if (expected === "Continuing activity review") outcome = "Continuing activity review applies because prior SAR history exists.";
+  if (expected === "Close - no fraud found") outcome = "Threshold is not applied because the alert is explained/no fraud found.";
+  return `Loss: ${lossText}.<br>Suspect identified: ${suspectLine}.<br>Applicable threshold: ${thresholdLabel}.<br>${outcome}`;
 }
 
 function narrativeFeedback(text) {
@@ -3017,12 +3241,6 @@ function playScreen() {
       tag: `${profiles.length} Events`,
       body: `<div class="event-list">${profiles.map(([time, detail]) => `<div class="event-row"><span>${time}</span><strong>${detail}</strong>${flagButton(`${time} ${detail}`)}</div>`).join("")}</div>`
     }] : []),
-    ...(sessions.length ? [{
-      key: "session",
-      title: "IP / Session Data",
-      tag: `${sessions.length} Sessions`,
-      body: `<div class="ip-table">${sessions.map(([time, ip, cc, country, region, lat, lon, action]) => `<div class="ip-row"><span>${time}</span><strong>${ip}</strong><b>${action}</b><em>${cc} | ${country} | ${region}<br>Lat ${lat}, Long ${lon}</em>${flagButton(`${time} ${ip} ${action} ${region}`)}</div>`).join("")}</div>`
-    }] : []),
     {
       key: "evidence",
       title: "Supporting Evidence",
@@ -3074,6 +3292,12 @@ function playScreen() {
       </div>
 
       <div class="file-section">
+        <h3>IP / Session Data</h3>
+        <p class="file-help">Use this timeline before reviewing account activity. Normal customer logins and suspicious sessions should line up with profile events and transactions.</p>
+        <div class="ip-table">${sessions.map(([time, ip, cc, country, region, lat, lon, action]) => `<div class="ip-row"><span>${time}</span><strong>${ip}</strong><b>${action}</b><em>${cc} | ${country} | ${region}<br>Lat ${lat}, Long ${lon}</em>${flagButton(`${time} ${ip} ${action} ${region}`)}</div>`).join("")}</div>
+      </div>
+
+      <div class="file-section">
         <h3>Transaction Activity</h3>
         <p class="file-help">The potential loss should be supported by the transaction activity below.</p>
         <div class="transaction-table">${transactions.map(([time, type, amount, detail]) => {
@@ -3094,7 +3318,7 @@ function playScreen() {
 
       <div class="file-section">
         <h3>Supporting Documentation</h3>
-        <p class="file-help">Profile changes and IP/session data are separate from transaction activity.</p>
+        <p class="file-help">Profile changes, customer notes, and supporting evidence are separate from transaction activity.</p>
         <div class="clue-grid">
           ${clueCards.map((clue) => `
             <article class="clue-card ${state.openClues.has(clue.key) ? "open" : ""}">
@@ -3127,14 +3351,14 @@ function playScreen() {
         <h3>Make the Typology Call</h3>
         <p class="file-help">Select one primary typology first, then select any overlapping typologies that the evidence also supports. Tap i for a plain-language definition.</p>
         <div class="choices">
-          ${CHOICES.map((choice) => `<button class="choice-button ${state.selectedTypologies.has(choice) ? "selected" : ""}" data-classification="${choice}"><span>${choice} <span class="info-dot" data-typology-info="${choice}" aria-label="${choice} definition">i</span></span><span>${typologySelectionLabel(choice)}</span></button>`).join("")}
+          ${CHOICES.map((choice) => `<button class="choice-button ${state.selectedTypologies.has(choice) ? "selected" : ""}" data-classification="${choice}" title="${escapeHtml(fraudGuideDefinition(choice))}"><span>${choice} <span class="info-dot" data-typology-info="${choice}" title="${escapeHtml(fraudGuideDefinition(choice))}" aria-label="${choice} definition">i</span></span><span>${typologySelectionLabel(choice)}</span></button>`).join("")}
         </div>
         ${state.activeTypologyInfo ? `<p class="file-help"><strong>${state.activeTypologyInfo}:</strong> ${fraudGuideDefinition(state.activeTypologyInfo)}</p>` : ""}
       </div>
 
       <div class="file-section">
         <h3>Case Disposition</h3>
-        <p class="file-help">Based on the typology, amount, suspect/recipient information, customer profile, and documentation, choose the handling path.</p>
+        <p class="file-help">Based on the typology, amount, suspect/recipient information, customer profile, and documentation, choose the handling path. Training thresholds: $5,000 with an identified suspect, $25,000 with no suspect, and continuing reviews after a prior SAR.</p>
         <div class="choices compact">
           ${SAR_CHOICES.map(dispositionButton).join("")}
         </div>
@@ -3177,13 +3401,14 @@ function answerScreen() {
       <div class="score-breakdown">
         ${breakdown.map(([label, points, note]) => `<div class="score-row"><span>${label}</span><strong>${points > 0 ? `+${points}` : points}</strong><em>${note}</em></div>`).join("")}
       </div>
+      <p class="file-help">${scoreReasonSummary(result, breakdown)}</p>
       <p class="file-help">Scores cap at 100. If everything was right but the score was below 100, it was usually because of hint use or incomplete red flag selection.</p>
     </article>
     <article class="result-card"><h3>Consequence</h3><p>${caseConsequence(item, result.wasCorrect)}</p></article>
     <article class="result-card"><h3>Documentation focus</h3><p>${DECISIONS_BY_ANSWER[item.correct]}</p></article>
     <article class="result-card"><h3>Typology review</h3><p>${typologyFeedback(item, result.selected)}</p></article>
     <article class="result-card"><h3>Disposition</h3><p>${sarText}</p></article>
-    <article class="result-card"><h3>Suspect / Threshold Check</h3><p>${suspectInfo}</p></article>
+    <article class="result-card"><h3>Suspect / Threshold Check</h3><p>${thresholdMath(item)}</p></article>
     ${regENoteApplies(item) ? `<article class="result-card"><h3>Reg E note</h3><p>For client-reported unauthorized electronic transactions, banks generally must investigate and may need to reimburse the customer under Regulation E. That customer-protection process is separate from the SAR decision.</p></article>` : ""}
     <article class="result-card"><h3>Customer Profile comparison</h3><p>${baseline.join(" ")}</p></article>
     <article class="result-card"><h3>Red flag selection</h3><p>You selected: ${selectedEvidence.length ? selectedEvidence.join(", ") : "none"}.</p></article>
@@ -3506,4 +3731,5 @@ render();
 </script>
 </body>
 </html>
+
 
