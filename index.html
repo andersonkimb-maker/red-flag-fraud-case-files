@@ -1679,7 +1679,7 @@ const DECISIONS_BY_ANSWER = {
   "Account Takeover": "Document access-change evidence such as IP, device, profile changes, authentication events, and transaction timing.",
   "First-Party Fraud": "Document customer-control indicators, benefit pattern, dispute history, repayment behavior, and repeated abuse signals.",
   "Third-Party Fraud": "Document scam indicators such as call notes, customer statements, recipient risk, payment instructions, and social-engineering scripts.",
-  "Elder/Vulnerable Adult Exploitation": "Document customer vulnerability indicators, pressure tactics, beneficiary/recipient details, call notes, and escalation steps such as APS or law enforcement referral.",
+  "Elder/Vulnerable Adult Exploitation": "Document customer vulnerability indicators, pressure tactics, beneficiary/recipient details, call notes, and escalation steps such as Adult Protective Services (APS) or law enforcement referral.",
   "Real Identity Theft": "Document victim statements, identity mismatch details, application profile data, device/IP evidence, and transaction activity.",
   "Synthetic Identity Fraud": "Document thin-file signals, blended identity data, linked accounts, staged repayment, and cash-out behavior.",
   "Normal Customer Behavior": "Document why the alert is explainable, including trusted device, normal location, customer history, and lack of fraud indicators."
@@ -1688,7 +1688,7 @@ const LESSONS_BY_ANSWER = {
   "Account Takeover": "Lesson: ATO is about loss of account control. Look for access changes before the money movement.",
   "First-Party Fraud": "Lesson: first-party fraud usually shows account control plus customer benefit from the abuse.",
   "Third-Party Fraud": "Lesson: third-party fraud often means the real customer is being manipulated by an outside scammer.",
-  "Elder/Vulnerable Adult Exploitation": "Lesson: elder or vulnerable adult cases need extra care because the customer may be acting under pressure, fear, or manipulation.",
+  "Elder/Vulnerable Adult Exploitation": "Lesson: check the DOB and vulnerability facts. If the victim is 65+ or a vulnerable/disabled adult, escalation to law enforcement or Adult Protective Services (APS) is required no matter the amount.",
   "Real Identity Theft": "Lesson: real identity theft uses a real person's information without permission. A victim report matters.",
   "Synthetic Identity Fraud": "Lesson: synthetic identity fraud often uses thin or blended identity signals to build trust before cash-out.",
   "Normal Customer Behavior": "Lesson: one unusual detail is not enough. Good investigators know when the evidence supports closing with no fraud found."
@@ -1797,7 +1797,7 @@ const DISPOSITION_COPY = {
   "Fraud confirmed - no SAR required (below threshold)": ["Fraud, no SAR", "Fraud is confirmed, but reporting threshold is not met."],
   "Request more information": ["Need more info", "Evidence is genuinely incomplete."],
   "File SAR": ["File SAR", "Suspicious activity meets reporting criteria."],
-  "File SAR + escalate to law enforcement/APS": ["File SAR + escalate", "SAR-worthy and needs law enforcement or APS escalation."],
+  "File SAR + escalate to law enforcement/APS": ["File SAR + escalate", "Required when the victim is 65+ or a vulnerable/disabled adult: file the SAR and refer to law enforcement or Adult Protective Services (APS)."],
   "Continuing activity review": ["Continuing review", "Ongoing activity on a previously reported subject."]
 };
 const EXPECTED_SAR_DECISIONS = {
@@ -1845,11 +1845,11 @@ const SAR_RATIONALES = {
   a6: "The wire is supported by closing documents and an authenticated customer call. Close with no fraud found even though the amount is large.",
   e1: "This resembles ongoing first-party abuse on a subject already under review. Use continuing activity review and follow the 90-day follow-up SAR cycle when applicable.",
   e2: "Request more information before filing. The seller/buyer links are suspicious, but the case needs the pending aggregation detail and merchant ownership records before deciding whether the $5,000 identified-suspect threshold is truly met.",
-  e3: "Elder financial exploitation should be escalated even when the dollar amount is below a simplified threshold. File SAR and escalate to law enforcement or APS as policy requires.",
+  e3: "The customer is 77 (DOB 04/12/1949), which triggers the mandatory escalation rule. Elder financial exploitation should be escalated even when the dollar amount is below a simplified threshold. File SAR and refer to law enforcement or Adult Protective Services (APS) as policy requires.",
   i4: "Romance scam indicators are present and the customer is working-age in this file, but the displayed loss is below threshold. Confirm fraud and document recipient risk and customer notes.",
   a5: "Phishing/imposter scam indicators are complete, but the displayed amount is below threshold. Confirm fraud and preserve link, call, and safe-account evidence.",
-  e4: "The suspicious elder/imposter scam has an identifiable recipient and vulnerable customer indicators. File SAR and escalate to law enforcement or APS.",
-  e5: "A trusted family member is an identifiable suspect, the aggregate loss exceeds $5,000, and the customer is an older vulnerable adult. File SAR and escalate to law enforcement or APS.",
+  e4: "The customer is 83 (DOB 01/17/1943), which triggers the mandatory escalation rule. The suspicious elder/imposter scam has an identifiable recipient and vulnerable customer indicators. File SAR and refer to law enforcement or Adult Protective Services (APS).",
+  e5: "The customer is 79 (DOB 10/05/1946), which triggers the mandatory escalation rule. A trusted family member is an identifiable suspect, the aggregate loss exceeds $5,000, and the customer is an older vulnerable adult. File SAR and refer to law enforcement or Adult Protective Services (APS).",
   e6: "No individual suspect is identifiable, but the unauthorized ACH loss is $31,200, which exceeds the $25,000 no-suspect threshold. File SAR."
 };
 const POTENTIAL_LOSS = {
@@ -2325,7 +2325,7 @@ const FRAUD_GUIDE = [
   ["Account Takeover", "Someone gains control of an existing customer's account. Look for password resets, new devices, profile changes, SIM swaps, and new recipients."],
   ["First-Party Fraud", "The real customer controls the account and benefits from the abuse, such as dispute abuse, refund abuse, or intentional nonpayment."],
   ["Third-Party Fraud", "A real customer is manipulated by an outside scammer, such as romance scams, elder scams, phishing, imposter calls, or safe-account scripts."],
-  ["Elder/Vulnerable Adult Exploitation", "A customer who is older or vulnerable is pressured, tricked, or controlled into moving money. These cases often need escalation beyond a normal fraud review."],
+  ["Elder/Vulnerable Adult Exploitation", "A customer who is older or vulnerable is pressured, tricked, or controlled into moving money. If the victim is 65+ or a vulnerable/disabled adult, escalation to law enforcement/APS is required, no matter the amount."],
   ["Real Identity Theft", "A real person's identity is used without permission. Victim reports, stolen documents, and mismatched contact details matter."],
   ["Synthetic Identity Fraud", "A fake or blended identity is built to look real, often with thin files, new contact details, staged repayment, and later cash-out."],
   ["Normal Customer Behavior", "The activity looks explainable when the full context is reviewed. Good investigators know when to close with no fraud found."]
@@ -2338,6 +2338,8 @@ const state = {
   hintCount: 0,
   startedAt: null,
   expandedEvidence: new Set(),
+  sessionLogExpanded: false,
+  transactionLogExpanded: false,
   openClues: new Set(["summary"]),
   selectedEvidence: new Set(),
   flaggedEvidence: new Set(),
@@ -2380,6 +2382,8 @@ function clearActiveCaseState() {
   state.selectedEvidence = new Set();
   state.flaggedEvidence = new Set();
   state.expandedEvidence = new Set();
+  state.sessionLogExpanded = false;
+  state.transactionLogExpanded = false;
   state.openClues = new Set(["summary"]);
   state.selectedSarDecision = null;
   state.activeTypologyInfo = null;
@@ -2881,7 +2885,7 @@ function caseTakeaway(item) {
   if (expected === "Close - no fraud found") return "Takeaway: no fraud found means the alert was explained by the evidence.";
   if (expected === "Fraud confirmed - no SAR required (below threshold)") return "Takeaway: below-threshold fraud is still fraud. Document it and handle customer remediation separately from SAR filing.";
   if (expected === "File SAR") return "Takeaway: SAR decisions depend on suspicious activity, amount, suspect information, and aggregation.";
-  if (expected === "File SAR + escalate to law enforcement/APS") return "Takeaway: elder or vulnerable adult exploitation can require both SAR filing and external escalation.";
+  if (expected === "File SAR + escalate to law enforcement/APS") return "Takeaway: when the victim is 65+ or a vulnerable/disabled adult, escalation to law enforcement or Adult Protective Services (APS) is required in addition to the SAR decision, no matter the dollar amount.";
   if (expected === "Continuing activity review") return "Takeaway: when suspicious activity continues after a SAR has already been filed, the case is handled as continuing activity review. The follow-up SAR is filed on the review cycle instead of treating it as a brand-new first-time SAR.";
   return "Takeaway: use the complete evidence picture before choosing the disposition.";
 }
@@ -3001,7 +3005,7 @@ function thresholdMath(item) {
   let outcome = met ? "Threshold met." : "Threshold met: no.";
   if (expected === "Fraud confirmed - no SAR required (below threshold)") outcome += " SAR not required; fraud still documented.";
   if (expected === "File SAR") outcome += " File SAR.";
-  if (expected === "File SAR + escalate to law enforcement/APS") outcome += " File SAR and escalate.";
+  if (expected === "File SAR + escalate to law enforcement/APS") outcome += " File SAR and refer to law enforcement or Adult Protective Services (APS).";
   if (expected === "Request more information") outcome = "Threshold decision is pending because ownership, aggregation, or documentation is incomplete.";
   if (expected === "Continuing activity review") outcome = "Continuing activity review applies because prior SAR history exists.";
   if (expected === "Close - no fraud found") outcome = "Threshold is not applied because the alert is explained/no fraud found.";
@@ -3173,7 +3177,7 @@ function howScreen() {
     </article>
     <h3 class="section-title">SAR Threshold Note</h3>
     <article class="info-card">
-      <p>This training version teaches common SAR concepts: suspicious activity may be reportable at $5,000 or more when a suspect is identified, $25,000 or more when no suspect is identified, and any amount for insider abuse. SARs are generally filed within 30 days from detection, and continuing activity is reviewed on a 90-day cycle. Real programs follow their institution's policy and applicable regulations.</p>
+      <p>This training version teaches common SAR concepts: suspicious activity may be reportable at $5,000 or more when a suspect is identified, $25,000 or more when no suspect is identified, and any amount for insider abuse. If the victim is age 65 or older, or a vulnerable or disabled adult, the case requires escalation to law enforcement and/or Adult Protective Services (APS) in addition to the SAR decision. This applies regardless of dollar amount. SARs are generally filed within 30 days from detection, and continuing activity is reviewed on a 90-day cycle. Real programs follow their institution's policy and applicable regulations.</p>
     </article>
     <h3 class="section-title">Three Different Closures</h3>
     <article class="info-card">
@@ -3228,6 +3232,14 @@ function playScreen() {
   const sessions = ipSessionLogs(item);
   const baseline = customerBaseline(item);
   const supportOptions = evidenceOptions(item);
+  const sessionLabel = ([time, ip, , , region, , , action]) => `${time} ${ip} ${action} ${region}`;
+  const transactionLabel = ([time, type, amount, detail]) => `${time} ${type} ${amount} ${detail}`;
+  const visibleSessions = state.sessionLogExpanded || sessions.length <= 3
+    ? sessions
+    : sessions.filter((row, index) => index < 3 || state.flaggedEvidence.has(sessionLabel(row)));
+  const visibleTransactions = state.transactionLogExpanded || transactions.length <= 6
+    ? transactions
+    : transactions.filter((row, index) => index < 6 || state.flaggedEvidence.has(transactionLabel(row)));
   const clueCards = [
     {
       key: "notes",
@@ -3294,16 +3306,18 @@ function playScreen() {
       <div class="file-section">
         <h3>IP / Session Data</h3>
         <p class="file-help">Use this timeline before reviewing account activity. Normal customer logins and suspicious sessions should line up with profile events and transactions.</p>
-        <div class="ip-table">${sessions.map(([time, ip, cc, country, region, lat, lon, action]) => `<div class="ip-row"><span>${time}</span><strong>${ip}</strong><b>${action}</b><em>${cc} | ${country} | ${region}<br>Lat ${lat}, Long ${lon}</em>${flagButton(`${time} ${ip} ${action} ${region}`)}</div>`).join("")}</div>
+        <div class="ip-table">${visibleSessions.map(([time, ip, cc, country, region, lat, lon, action]) => `<div class="ip-row"><span>${time}</span><strong>${ip}</strong><b>${action}</b><em>${cc} | ${country} | ${region}<br>Lat ${lat}, Long ${lon}</em>${flagButton(`${time} ${ip} ${action} ${region}`)}</div>`).join("")}</div>
+        ${sessions.length > 3 ? `<button class="secondary-button" data-action="toggle-sessions">${state.sessionLogExpanded ? "Show fewer" : `Show all ${sessions.length} sessions`}</button>` : ""}
       </div>
 
       <div class="file-section">
         <h3>Transaction Activity</h3>
         <p class="file-help">The potential loss should be supported by the transaction activity below.</p>
-        <div class="transaction-table">${transactions.map(([time, type, amount, detail]) => {
+        <div class="transaction-table">${visibleTransactions.map(([time, type, amount, detail]) => {
           const label = `${time} ${type} ${amount} ${detail}`;
           return `<div class="txn-row"><span>${time}</span><strong>${type}</strong><b>${amount}</b><em>${detail}</em>${flagButton(label)}</div>`;
         }).join("")}</div>
+        ${transactions.length > 6 ? `<button class="secondary-button" data-action="toggle-transactions">${state.transactionLogExpanded ? "Show fewer" : `Show all ${transactions.length} transactions`}</button>` : ""}
       </div>
 
       <div class="file-section notepad-section">
@@ -3502,6 +3516,8 @@ function startCase(id) {
   state.selectedTypologies = new Set();
   state.selectedSarDecision = null;
   state.activeTypologyInfo = null;
+  state.sessionLogExpanded = false;
+  state.transactionLogExpanded = false;
   state.caseNotes = loadCaseNotes(id);
   state.narrativeDraft = loadNarrativeDraft(id);
   state.narrativeFeedback = "";
@@ -3657,6 +3673,14 @@ function bindScreenEvents() {
         if (state.hintCount < item.hints.length) state.hintCount += 1;
         render();
       }
+      if (action === "toggle-sessions") {
+        state.sessionLogExpanded = !state.sessionLogExpanded;
+        render();
+      }
+      if (action === "toggle-transactions") {
+        state.transactionLogExpanded = !state.transactionLogExpanded;
+        render();
+      }
       if (action === "submit-decision") {
         if (!state.selectedEvidence.size) {
           alert("Choose at least one red flag before submitting.");
@@ -3731,5 +3755,6 @@ render();
 </script>
 </body>
 </html>
+
 
 
