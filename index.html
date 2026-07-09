@@ -1095,6 +1095,43 @@ button {
   text-align: center;
 }
 
+.submit-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(11, 18, 32, 0.64);
+}
+
+.submit-popup-card {
+  width: min(100%, 340px);
+  padding: 18px;
+  border: 1px solid rgba(23, 32, 51, 0.16);
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--button-text);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.submit-popup-card h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.submit-popup-card p {
+  margin: 0;
+  color: #111111;
+  line-height: 1.45;
+}
+
+.submit-popup-card .primary-button {
+  width: 100%;
+  margin-top: 16px;
+}
+
 @media (min-width: 760px) {
   .app-shell {
     min-height: 92vh;
@@ -2407,6 +2444,7 @@ const state = {
   narrativeFeedback: "",
   narrativeSelections: new Set(),
   narrativeProMode: false,
+  submitPopup: null,
   pendingScrollTop: false,
   mode: "Training",
   history: ["home"],
@@ -3102,6 +3140,7 @@ function awardBadges() {
 function navigate(screen, data = {}) {
   state.screen = screen;
   Object.assign(state, data);
+  state.submitPopup = null;
   state.history.push(screen);
   state.pendingScrollTop = true;
   render();
@@ -3128,11 +3167,24 @@ function render() {
   if (state.screen === "play") app.innerHTML = playScreen();
   if (state.screen === "answer") app.innerHTML = answerScreen();
   if (state.screen === "progress") app.innerHTML = progressScreen();
+  if (state.submitPopup) app.insertAdjacentHTML("beforeend", submitPopup());
   bindScreenEvents();
   if (state.pendingScrollTop) {
     state.pendingScrollTop = false;
     requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
   }
+}
+
+function submitPopup() {
+  return `
+    <div class="submit-popup" role="dialog" aria-modal="true" aria-labelledby="submitPopupTitle">
+      <div class="submit-popup-card">
+        <h3 id="submitPopupTitle">Oops look for more flags</h3>
+        <p>${state.submitPopup}</p>
+        <button class="primary-button" data-action="close-submit-popup">Keep Looking</button>
+      </div>
+    </div>
+  `;
 }
 
 function svgInvestigator() {
@@ -3739,17 +3791,24 @@ function bindScreenEvents() {
         state.transactionLogExpanded = !state.transactionLogExpanded;
         render();
       }
+      if (action === "close-submit-popup") {
+        state.submitPopup = null;
+        render();
+      }
       if (action === "submit-decision") {
         if (!state.selectedEvidence.size) {
-          alert("Choose at least one red flag before submitting.");
+          state.submitPopup = "Select the red flags that support your decision before submitting.";
+          render();
           return;
         }
         if (!state.selectedClassification) {
-          alert("Choose at least one typology before submitting.");
+          state.submitPopup = "Pick the fraud type that best fits the evidence before submitting.";
+          render();
           return;
         }
         if (!state.selectedSarDecision) {
-          alert("Choose a case disposition before submitting.");
+          state.submitPopup = "Choose the case disposition before submitting.";
+          render();
           return;
         }
         chooseAnswer(state.selectedClassification);
@@ -3813,6 +3872,7 @@ render();
 </script>
 </body>
 </html>
+
 
 
 
